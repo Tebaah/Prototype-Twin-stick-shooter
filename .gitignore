@@ -1,0 +1,61 @@
+# =============================================================================
+#  Godot 4 (.NET / C#) — Prototype-Twin-stick-shooter
+# =============================================================================
+
+# ---------------------------------------------------------------------------
+# Godot 4 (editor)
+# Carpeta interna del editor: caché de importación, caché de shaders,
+# ajustes locales del editor y salidas de compilación .NET (.godot/mono/).
+# Se regenera automáticamente al abrir el proyecto.
+# ---------------------------------------------------------------------------
+.godot/
+
+# ---------------------------------------------------------------------------
+# Godot: exportaciones
+# export_presets.cfg  -> descomenta si quieres versionar los presets de export.
+# ---------------------------------------------------------------------------
+exports/
+*.translation
+
+# ---------------------------------------------------------------------------
+# Godot .NET / C#
+# En Godot 4 el proyecto C# se compila dentro de .godot/mono/ (ya ignorado).
+# Reglas adicionales por si el build se lanza fuera del editor (CLI/IDE):
+# ---------------------------------------------------------------------------
+/bin/
+/obj/
+.mono/
+mono_crash.*
+
+# ---------------------------------------------------------------------------
+# .NET / NuGet
+# ---------------------------------------------------------------------------
+*.user
+*.suo
+*.userprefs
+*.nupkg
+*.snupkg
+packages/
+
+# ---------------------------------------------------------------------------
+# IDEs
+# .vscode/ se ignora excepto lo que decidamos compartir (extensiones, etc.)
+# ---------------------------------------------------------------------------
+.vs/
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# ---------------------------------------------------------------------------
+# Sistema operativo / miscelánea
+# ---------------------------------------------------------------------------
+.DS_Store
+Thumbs.db
+desktop.ini
+*~
+*.tmp
+
+# ---------------------------------------------------------------------------
+# Reglas
+# ---------------------------------------------------------------------------
+.clinerules*

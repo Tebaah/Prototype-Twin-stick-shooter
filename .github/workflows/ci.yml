@@ -1,0 +1,26 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build:
+    name: Compilar C# (Godot .NET)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout del repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar .NET SDK 8.0
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Restaurar dependencias (NuGet)
+        run: dotnet restore Prototype-Twin-stick-shooter.sln
+
+      - name: Compilar solución (Debug)
+        run: dotnet build Prototype-Twin-stick-shooter.sln --configuration Debug --no-restore

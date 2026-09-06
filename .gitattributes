@@ -1,0 +1,32 @@
+# Normaliza los finales de línea de todos los archivos de texto.
+* text=auto eol=lf
+
+# Archivos de texto del proyecto (Godot + C# + documentación).
+*.cs      text eol=lf
+*.csproj  text eol=lf
+*.sln     text eol=lf
+*.gd      text eol=lf
+*.tscn    text eol=lf
+*.tres    text eol=lf
+*.import  text eol=lf
+*.godot   text eol=lf
+*.json    text eol=lf
+*.md      text eol=lf
+*.svg     text eol=lf
+*.yml     text eol=lf
+*.yaml    text eol=lf
+
+# Archivos binarios: Git no debe tratarlos como texto ni hacer diff textual.
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.webp binary
+*.bmp  binary
+*.tga  binary
+*.ktx  binary
+*.fbx  binary
+*.glb  binary
+*.ogg  binary
+*.wav  binary
+*.mp3  binary
+
