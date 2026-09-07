@@ -1,0 +1,64 @@
+[gd_scene format=3 uid="uid://j556vkvqibg7"]
+
+[ext_resource type="Script" uid="uid://cm5x550nrdf8i" path="res://Scripts/Player/PlayerController.cs" id="1_jlvik"]
+[ext_resource type="Texture2D" uid="uid://6gqwn0rojj5w" path="res://Assets/Character/Character.svg" id="1_mtuoh"]
+[ext_resource type="Script" uid="uid://d35yn2g4e2kuf" path="res://Scripts/Player/States/PlayerStateMachine.cs" id="1_xpcdj"]
+[ext_resource type="Texture2D" uid="uid://crykrrqknw4y5" path="res://Assets/Marker/Marker.svg" id="2_htcer"]
+[ext_resource type="Script" uid="uid://by6j84vx2ay2t" path="res://Scripts/Player/States/IdleState.cs" id="2_mtuoh"]
+[ext_resource type="Script" uid="uid://s5c1pmu8csab" path="res://Scripts/Player/States/MoveState.cs" id="3_htcer"]
+[ext_resource type="Script" uid="uid://bowuelldkp727" path="res://Scripts/Player/States/ChargeState.cs" id="6_0u5uq"]
+[ext_resource type="Script" uid="uid://bex11aidswhou" path="res://Scripts/Player/States/AttackState.cs" id="7_jlvik"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_vnw7b"]
+radius = 17.0
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_vnw7b"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_mtuoh")
+}],
+"loop": 1,
+"name": &"idle",
+"speed": 5.0
+}]
+
+[node name="Player" type="CharacterBody2D" unique_id=258991823]
+script = ExtResource("1_jlvik")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=285513500]
+shape = SubResource("CircleShape2D_vnw7b")
+
+[node name="Animation" type="AnimatedSprite2D" parent="." unique_id=1226598149]
+modulate = Color(0, 0.35896283, 0.35907853, 1)
+sprite_frames = SubResource("SpriteFrames_vnw7b")
+animation = &"idle"
+
+[node name="Marker2D" type="Marker2D" parent="." unique_id=1927930730]
+position = Vector2(0, -22)
+
+[node name="Sprite2D" type="Sprite2D" parent="Marker2D" unique_id=433289741]
+modulate = Color(1, 1, 1, 0.28235295)
+texture = ExtResource("2_htcer")
+
+[node name="MovementMachine" type="Node" parent="." unique_id=1575684700 node_paths=PackedStringArray("_initialStateNode", "_bodyNode")]
+script = ExtResource("1_xpcdj")
+_initialStateNode = NodePath("IdleState")
+_bodyNode = NodePath("..")
+
+[node name="IdleState" type="Node" parent="MovementMachine" unique_id=1746511053]
+script = ExtResource("2_mtuoh")
+
+[node name="MoveState" type="Node" parent="MovementMachine" unique_id=1362665765]
+script = ExtResource("3_htcer")
+
+[node name="AttackMachine" type="Node" parent="." unique_id=1892934227 node_paths=PackedStringArray("_initialStateNode", "_bodyNode")]
+script = ExtResource("1_xpcdj")
+_initialStateNode = NodePath("ChargeState")
+_bodyNode = NodePath("..")
+
+[node name="ChargeState" type="Node" parent="AttackMachine" unique_id=1912708921]
+script = ExtResource("6_0u5uq")
+
+[node name="AttackState" type="Node" parent="AttackMachine" unique_id=1907640254]
+script = ExtResource("7_jlvik")
