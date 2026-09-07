@@ -1,7 +1,7 @@
-using Godot;
 using System;
+using Godot;
 
-public partial class PlayerController : Node
+public partial class PlayerController : CharacterBody2D
 {
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
