@@ -13,12 +13,29 @@ public partial class PlayerController : CharacterBody2D
 
     #endregion
 
-    public override void _Ready()
+    #region Godot Methods
+
+    public override void _PhysicsProcess(double delta)
     {
+        base._PhysicsProcess(delta);
+        RotateToMouse();
     }
 
-    // Called every frame. 'delta' is the elapsed time since the previous frame.
-    public override void _Process(double delta)
+    #endregion
+
+    #region Custom Methods
+
+    /// <summary>
+    /// Orienta al jugador hacia el cursor del ratón.
+    /// <see cref="Node2D.LookAt"/> alinea el eje +X local con el cursor, pero el frente del
+    /// personaje y el marcador de puntería (Marker2D, en (0, -22) local) apuntan hacia arriba
+    /// (eje -Y local); de ahí la corrección constante de 90° sobre <see cref="Node2D.RotationDegrees"/>.
+    /// </summary>
+    public void RotateToMouse()
     {
+        LookAt(GetGlobalMousePosition());
+        RotationDegrees += 90f;
     }
+
+    #endregion
 }
