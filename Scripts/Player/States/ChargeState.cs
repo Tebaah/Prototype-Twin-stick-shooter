@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public partial class ChargeState : State<PlayerController>
+public partial class ChargeState : PlayerState
 {
 
 }
