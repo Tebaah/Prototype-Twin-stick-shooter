@@ -8,6 +8,7 @@
 [ext_resource type="Script" uid="uid://s5c1pmu8csab" path="res://Scripts/Player/States/MoveState.cs" id="3_htcer"]
 [ext_resource type="Script" uid="uid://bowuelldkp727" path="res://Scripts/Player/States/ChargeState.cs" id="6_0u5uq"]
 [ext_resource type="Script" uid="uid://bex11aidswhou" path="res://Scripts/Player/States/AttackState.cs" id="7_jlvik"]
+[ext_resource type="PackedScene" uid="uid://dvuuwhdqw4ygu" path="res://bullet.tscn" id="9_gk6dx"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_vnw7b"]
 radius = 17.0
@@ -62,3 +63,4 @@ script = ExtResource("6_0u5uq")
 
 [node name="AttackState" type="Node" parent="AttackMachine" unique_id=1907640254]
 script = ExtResource("7_jlvik")
+bulletScene = ExtResource("9_gk6dx")
