@@ -1,0 +1,15 @@
+[gd_scene format=3 uid="uid://dvuuwhdqw4ygu"]
+
+[ext_resource type="Texture2D" uid="uid://cawy37wsf2vh8" path="res://icon.svg" id="1_v7oki"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_vnw7b"]
+size = Vector2(128, 130)
+
+[node name="Bullet" type="Area2D" unique_id=2111763980]
+scale = Vector2(0.1, 0.1)
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=635361291]
+texture = ExtResource("1_v7oki")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1008644558]
+shape = SubResource("RectangleShape2D_vnw7b")
