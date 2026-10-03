@@ -10,11 +10,17 @@ public partial class PlayerController : CharacterBody2D
 
     /// <summary>Dirección de entrada normalizada que aporta el estado activo.</summary>
     public Vector2 DirectionOfMovement { get; set; }
+    public Marker2D Marker2D { get; set; }
 
     #endregion
 
     #region Godot Methods
 
+    public override void _Ready()
+    {
+        base._Ready();
+        Marker2D = GetNode<Marker2D>("Marker2D");
+    }
     public override void _PhysicsProcess(double delta)
     {
         base._PhysicsProcess(delta);
