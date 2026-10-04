@@ -1,0 +1,51 @@
+[gd_scene format=3 uid="uid://bmrpaptbq6emy"]
+
+[ext_resource type="Texture2D" uid="uid://b57vt0bb7kgfs" path="res://Assets/Enemy/Enemy-Rusher.png" id="1_wbk0n"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_rhioo"]
+radius = 16.03122
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_vnw7b"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_wbk0n")
+}],
+"loop": 1,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_34rj1"]
+radius = 122.20065
+
+[node name="EnemyRusher" type="CharacterBody2D" unique_id=1409485549]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=614237224]
+shape = SubResource("CircleShape2D_rhioo")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=615330906]
+texture_filter = 1
+sprite_frames = SubResource("SpriteFrames_vnw7b")
+
+[node name="PlayerDetectionArea" type="Area2D" parent="." unique_id=1912757701]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerDetectionArea" unique_id=1025304143]
+shape = SubResource("CircleShape2D_34rj1")
+
+[node name="BulletDetectionArea" type="Area2D" parent="." unique_id=1641259729]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="BulletDetectionArea" unique_id=869855158]
+shape = SubResource("CircleShape2D_34rj1")
+
+[node name="MovementMachine" type="Node" parent="." unique_id=786194729]
+
+[node name="IdleState" type="Node" parent="MovementMachine" unique_id=333082477]
+
+[node name="MoveState" type="Node" parent="MovementMachine" unique_id=1834649335]
+
+[node name="AttackMachine" type="Node" parent="." unique_id=1557079124]
+
+[node name="LookingForTargetState" type="Node" parent="AttackMachine" unique_id=713856852]
+
+[node name="AttackState" type="Node" parent="AttackMachine" unique_id=1378765181]
