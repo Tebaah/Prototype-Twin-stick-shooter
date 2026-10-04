@@ -43,6 +43,7 @@ Arena Cero es un twin-stick shooter minimalista para un jugador. El jugador cont
 | **Tamaño**               | 32x32 píxeles             |
 | **Vida inicial**         | 3 puntos                  |
 | **Cadencia disparo**     | 5 disparos/segundo        |
+| **Velocidad bala**       | 350 píxeles/segundo       |
 
 ### 2.1.1 Diagramas
 
