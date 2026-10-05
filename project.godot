@@ -24,6 +24,10 @@ window/stretch/aspect="expand"
 
 project/assembly_name="Prototype-Twin-stick-shooter"
 
+[global_group]
+
+Player=""
+
 [input]
 
 ui_left={
