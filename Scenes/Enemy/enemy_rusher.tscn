@@ -1,6 +1,10 @@
 [gd_scene format=3 uid="uid://bmrpaptbq6emy"]
 
+[ext_resource type="Script" uid="uid://t4vjeibg2ru1" path="res://Scripts/Enemy/EnemyRusher.cs" id="1_gvdhh"]
 [ext_resource type="Texture2D" uid="uid://b57vt0bb7kgfs" path="res://Assets/Enemy/Enemy-Rusher.png" id="1_wbk0n"]
+[ext_resource type="Script" uid="uid://xxlu2wcraauv" path="res://Scripts/Enemy/State/EnemyStateMachine.cs" id="3_v6f73"]
+[ext_resource type="Script" uid="uid://dqqicj4qyj8g2" path="res://Scripts/Enemy/State/IdleState.cs" id="4_u1ku0"]
+[ext_resource type="Script" uid="uid://cmfudk2nxidl" path="res://Scripts/Enemy/State/MoveState.cs" id="5_v6f73"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_rhioo"]
 radius = 16.03122
@@ -20,6 +24,8 @@ animations = [{
 radius = 122.20065
 
 [node name="EnemyRusher" type="CharacterBody2D" unique_id=1409485549]
+script = ExtResource("1_gvdhh")
+Speed = 100.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=614237224]
 shape = SubResource("CircleShape2D_rhioo")
@@ -29,6 +35,7 @@ texture_filter = 1
 sprite_frames = SubResource("SpriteFrames_vnw7b")
 
 [node name="PlayerDetectionArea" type="Area2D" parent="." unique_id=1912757701]
+position = Vector2(-1, 0)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerDetectionArea" unique_id=1025304143]
 shape = SubResource("CircleShape2D_34rj1")
@@ -38,14 +45,23 @@ shape = SubResource("CircleShape2D_34rj1")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="BulletDetectionArea" unique_id=869855158]
 shape = SubResource("CircleShape2D_34rj1")
 
-[node name="MovementMachine" type="Node" parent="." unique_id=786194729]
+[node name="MovementMachine" type="Node" parent="." unique_id=786194729 node_paths=PackedStringArray("_initialStateNode", "_bodyNode")]
+script = ExtResource("3_v6f73")
+_initialStateNode = NodePath("IdleState")
+_bodyNode = NodePath("..")
 
 [node name="IdleState" type="Node" parent="MovementMachine" unique_id=333082477]
+script = ExtResource("4_u1ku0")
 
 [node name="MoveState" type="Node" parent="MovementMachine" unique_id=1834649335]
+script = ExtResource("5_v6f73")
 
 [node name="AttackMachine" type="Node" parent="." unique_id=1557079124]
 
 [node name="LookingForTargetState" type="Node" parent="AttackMachine" unique_id=713856852]
 
 [node name="AttackState" type="Node" parent="AttackMachine" unique_id=1378765181]
+
+[connection signal="body_entered" from="PlayerDetectionArea" to="MovementMachine/IdleState" method="OnBodyEntered"]
+[connection signal="body_entered" from="PlayerDetectionArea" to="MovementMachine/MoveState" method="OnBodyEntered"]
+[connection signal="body_exited" from="PlayerDetectionArea" to="MovementMachine/MoveState" method="OnBodyExited"]
