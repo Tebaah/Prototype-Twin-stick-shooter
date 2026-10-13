@@ -1,10 +1,12 @@
 [gd_scene format=3 uid="uid://bmrpaptbq6emy"]
 
 [ext_resource type="Script" uid="uid://t4vjeibg2ru1" path="res://Scripts/Enemy/EnemyRusher.cs" id="1_gvdhh"]
-[ext_resource type="Texture2D" uid="uid://b57vt0bb7kgfs" path="res://Assets/Enemy/Enemy-Rusher.png" id="1_wbk0n"]
+[ext_resource type="Texture2D" uid="uid://duivhsgpu4c08" path="res://Assets/Enemy/enemy_up.png" id="2_81si4"]
 [ext_resource type="Script" uid="uid://xxlu2wcraauv" path="res://Scripts/Enemy/State/EnemyStateMachine.cs" id="3_v6f73"]
 [ext_resource type="Script" uid="uid://dqqicj4qyj8g2" path="res://Scripts/Enemy/State/IdleState.cs" id="4_u1ku0"]
 [ext_resource type="Script" uid="uid://cmfudk2nxidl" path="res://Scripts/Enemy/State/MoveState.cs" id="5_v6f73"]
+[ext_resource type="Script" uid="uid://b8e7c4i36rx74" path="res://Scripts/Enemy/State/LookingForTargetState.cs" id="6_u1ku0"]
+[ext_resource type="Script" uid="uid://xfhrusfv6qi0" path="res://Scripts/Enemy/State/AttackState.cs" id="7_81si4"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_rhioo"]
 radius = 16.03122
@@ -13,7 +15,7 @@ radius = 16.03122
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("1_wbk0n")
+"texture": ExtResource("2_81si4")
 }],
 "loop": 1,
 "name": &"default",
@@ -36,6 +38,7 @@ sprite_frames = SubResource("SpriteFrames_vnw7b")
 
 [node name="PlayerDetectionArea" type="Area2D" parent="." unique_id=1912757701]
 position = Vector2(-1, 0)
+collision_layer = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerDetectionArea" unique_id=1025304143]
 shape = SubResource("CircleShape2D_34rj1")
@@ -56,12 +59,19 @@ script = ExtResource("4_u1ku0")
 [node name="MoveState" type="Node" parent="MovementMachine" unique_id=1834649335]
 script = ExtResource("5_v6f73")
 
-[node name="AttackMachine" type="Node" parent="." unique_id=1557079124]
+[node name="AttackMachine" type="Node" parent="." unique_id=1557079124 node_paths=PackedStringArray("_initialStateNode", "_bodyNode")]
+script = ExtResource("3_v6f73")
+_initialStateNode = NodePath("LookingForTargetState")
+_bodyNode = NodePath("..")
 
 [node name="LookingForTargetState" type="Node" parent="AttackMachine" unique_id=713856852]
+script = ExtResource("6_u1ku0")
 
 [node name="AttackState" type="Node" parent="AttackMachine" unique_id=1378765181]
+script = ExtResource("7_81si4")
 
 [connection signal="body_entered" from="PlayerDetectionArea" to="MovementMachine/IdleState" method="OnBodyEntered"]
 [connection signal="body_entered" from="PlayerDetectionArea" to="MovementMachine/MoveState" method="OnBodyEntered"]
+[connection signal="body_entered" from="PlayerDetectionArea" to="AttackMachine/LookingForTargetState" method="OnBodyEntered"]
 [connection signal="body_exited" from="PlayerDetectionArea" to="MovementMachine/MoveState" method="OnBodyExited"]
+[connection signal="body_exited" from="PlayerDetectionArea" to="AttackMachine/AttackState" method="OnBodyExited"]
