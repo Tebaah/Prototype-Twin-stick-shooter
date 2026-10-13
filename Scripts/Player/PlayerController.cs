@@ -12,6 +12,8 @@ public partial class PlayerController : CharacterBody2D
     public Vector2 DirectionOfMovement { get; set; }
     public Marker2D Marker2D { get; set; }
 
+    public int health = 3;
+
     #endregion
 
     #region Godot Methods
@@ -25,6 +27,7 @@ public partial class PlayerController : CharacterBody2D
     {
         base._PhysicsProcess(delta);
         RotateToMouse();
+        GD.Print(health);
     }
 
     #endregion
