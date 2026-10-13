@@ -12,7 +12,8 @@ public partial class PlayerController : CharacterBody2D
     public Vector2 DirectionOfMovement { get; set; }
     public Marker2D Marker2D { get; set; }
 
-    public int health = 3;
+    /// <summary>Vida restante del jugador (GDD 2.1: 3 puntos iniciales).</summary>
+    public int Health { get; set; } = 3;
 
     #endregion
 
@@ -27,7 +28,6 @@ public partial class PlayerController : CharacterBody2D
     {
         base._PhysicsProcess(delta);
         RotateToMouse();
-        GD.Print(health);
     }
 
     #endregion
@@ -37,7 +37,7 @@ public partial class PlayerController : CharacterBody2D
     /// <summary>
     /// Orienta al jugador hacia el cursor del ratón.
     /// <see cref="Node2D.LookAt"/> alinea el eje +X local con el cursor, pero el frente del
-    /// personaje y el marcador de puntería (Marker2D, en (0, -22) local) apuntan hacia arriba
+    /// personaje y el marcador de puntería (Marker2D, en (0, -17) local) apuntan hacia arriba
     /// (eje -Y local); de ahí la corrección constante de 90° sobre <see cref="Node2D.RotationDegrees"/>.
     /// </summary>
     public void RotateToMouse()

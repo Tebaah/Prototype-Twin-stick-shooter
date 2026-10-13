@@ -32,7 +32,7 @@ public partial class AttackState : EnemyState
 			if (Body.GetSlideCollision(i).GetCollider() is not PlayerController player)
 				continue;
 
-			player.health -= ContactDamage;
+			player.Health -= ContactDamage;
 			Body.QueueFree();
 			// El cuerpo queda marcado para liberarse al final del fotograma:
 			// no hay nada más que comprobar.
