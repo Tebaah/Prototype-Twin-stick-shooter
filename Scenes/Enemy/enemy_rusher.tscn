@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://bmrpaptbq6emy"]
 
 [ext_resource type="Script" uid="uid://t4vjeibg2ru1" path="res://Scripts/Enemy/EnemyRusher.cs" id="1_gvdhh"]
-[ext_resource type="Texture2D" uid="uid://b57vt0bb7kgfs" path="res://Assets/Enemy/Enemy-Rusher.png" id="1_wbk0n"]
+[ext_resource type="Texture2D" uid="uid://duivhsgpu4c08" path="res://Assets/Enemy/enemy_up.png" id="2_81si4"]
 [ext_resource type="Script" uid="uid://xxlu2wcraauv" path="res://Scripts/Enemy/State/EnemyStateMachine.cs" id="3_v6f73"]
 [ext_resource type="Script" uid="uid://dqqicj4qyj8g2" path="res://Scripts/Enemy/State/IdleState.cs" id="4_u1ku0"]
 [ext_resource type="Script" uid="uid://cmfudk2nxidl" path="res://Scripts/Enemy/State/MoveState.cs" id="5_v6f73"]
@@ -13,7 +13,7 @@ radius = 16.03122
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("1_wbk0n")
+"texture": ExtResource("2_81si4")
 }],
 "loop": 1,
 "name": &"default",

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b57vt0bb7kgfs"
-path="res://.godot/imported/Enemy-Rusher.png-5fad22f6fe9a021ccc68b234a586bdfa.ctex"
+uid="uid://hltfj8xr8ten"
+path="res://.godot/imported/slime_up.png-ea832dfd5d46470d1de29ec30d9419fc.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Enemy/Enemy-Rusher.png"
-dest_files=["res://.godot/imported/Enemy-Rusher.png-5fad22f6fe9a021ccc68b234a586bdfa.ctex"]
+source_file="res://Assets/Enemy/slime_up.png"
+dest_files=["res://.godot/imported/slime_up.png-ea832dfd5d46470d1de29ec30d9419fc.ctex"]
 
 [params]
 
