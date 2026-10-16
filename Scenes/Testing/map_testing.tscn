@@ -1,0 +1,34 @@
+[gd_scene format=3 uid="uid://qgsubukweiiq"]
+
+[ext_resource type="PackedScene" uid="uid://bwtk4ofqofqe" path="res://Scenes/Map/map.tscn" id="1_movid"]
+[ext_resource type="PackedScene" uid="uid://j556vkvqibg7" path="res://Scenes/Player/player.tscn" id="2_4ccrc"]
+[ext_resource type="PackedScene" uid="uid://bmrpaptbq6emy" path="res://Scenes/Enemy/enemy_rusher.tscn" id="3_ad02b"]
+[ext_resource type="PackedScene" uid="uid://bvip8uia4cat7" path="res://Scenes/Enemy/enemy_rusher2.tscn" id="4_qdloc"]
+[ext_resource type="PackedScene" uid="uid://bqiwiec4hw68i" path="res://Scenes/Obstacles/obstacle.tscn" id="5_4ccrc"]
+
+[node name="MapTesting" type="Node" unique_id=1338403720]
+
+[node name="Map" parent="." unique_id=813002864 instance=ExtResource("1_movid")]
+
+[node name="Player" parent="." unique_id=258991823 groups=["Player"] instance=ExtResource("2_4ccrc")]
+position = Vector2(384, 384)
+
+[node name="EnemyRusher" parent="." unique_id=1409485549 instance=ExtResource("3_ad02b")]
+position = Vector2(576, 192)
+
+[node name="EnemyRusher2" parent="." unique_id=415885769 instance=ExtResource("4_qdloc")]
+position = Vector2(128, 448)
+
+[node name="Obstacles" type="Node" parent="." unique_id=933676338]
+
+[node name="Obstacle" parent="Obstacles" unique_id=1790134167 instance=ExtResource("5_4ccrc")]
+position = Vector2(288, 224)
+
+[node name="Obstacle2" parent="Obstacles" unique_id=735829229 instance=ExtResource("5_4ccrc")]
+position = Vector2(480, 480)
+
+[node name="Obstacle3" parent="Obstacles" unique_id=1394198174 instance=ExtResource("5_4ccrc")]
+position = Vector2(288, 544)
+
+[node name="Obstacle4" parent="Obstacles" unique_id=753354531 instance=ExtResource("5_4ccrc")]
+position = Vector2(160, 352)
