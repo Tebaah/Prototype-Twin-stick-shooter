@@ -4,7 +4,8 @@ namespace Game.Enemy.States;
 /// <summary>
 /// Estado de ataque del Rusher: mientras el jugador siga dentro del área de
 /// detección, el enemigo comprueba si su cuerpo ha llegado a tocarlo; al impactar
-/// le descuenta una vida y se destruye (el Rusher muere de un solo golpe).
+/// le descuenta una vida y muere (el Rusher cae de un solo golpe), sumando su
+/// puntaje al marcador global.
 /// </summary>
 /// <remarks>
 /// Este estado no desplaza al enemigo: inspecciona las colisiones registradas por
@@ -32,8 +33,8 @@ public partial class AttackState : EnemyState
 			if (Body.GetSlideCollision(i).GetCollider() is not PlayerController player)
 				continue;
 
-			player.Health -= ContactDamage;
-			Body.QueueFree();
+			player.TakeDamage(ContactDamage);
+			Body.Die();
 			// El cuerpo queda marcado para liberarse al final del fotograma:
 			// no hay nada más que comprobar.
 			return;

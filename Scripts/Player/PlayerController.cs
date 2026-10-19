@@ -12,8 +12,17 @@ public partial class PlayerController : CharacterBody2D
     public Vector2 DirectionOfMovement { get; set; }
     public Marker2D Marker2D { get; set; }
 
-    /// <summary>Vida restante del jugador (GDD 2.1: 3 puntos iniciales).</summary>
-    public int Health { get; set; } = 3;
+    /// <summary>Vida inicial del jugador (GDD 2.1: 3 puntos).</summary>
+    public const int MaxHealth = GameManager.MaxLives;
+
+    /// <summary>Vida restante del jugador, entre 0 y <see cref="MaxHealth"/>.</summary>
+    public int Health { get; private set; } = MaxHealth;
+
+    /// <summary>Se emite cuando cambia la vida, con el valor actual.</summary>
+    public event Action<int> HealthChanged;
+
+    /// <summary>Se emite una sola vez cuando la vida llega a 0.</summary>
+    public event Action Died;
 
     #endregion
 
@@ -23,7 +32,14 @@ public partial class PlayerController : CharacterBody2D
     {
         base._Ready();
         Marker2D = GetNode<Marker2D>("Marker2D");
+        GameManager.Instance?.RegisterPlayer(this);
     }
+
+    public override void _ExitTree()
+    {
+        GameManager.Instance?.UnregisterPlayer(this);
+    }
+
     public override void _PhysicsProcess(double delta)
     {
         base._PhysicsProcess(delta);
@@ -33,6 +49,26 @@ public partial class PlayerController : CharacterBody2D
     #endregion
 
     #region Custom Methods
+
+    /// <summary>
+    /// Descuenta vida al jugador y notifica a los interesados.
+    /// </summary>
+    /// <param name="damage">Puntos de vida a descontar; los valores no positivos se ignoran.</param>
+    /// <remarks>
+    /// La vida nunca baja de 0 y <see cref="Died"/> se emite una sola vez, aunque
+    /// el jugador reciba daño en fotogramas posteriores.
+    /// </remarks>
+    public void TakeDamage(int damage)
+    {
+        if (damage <= 0 || Health <= 0)
+            return;
+
+        Health = Math.Max(0, Health - damage);
+        HealthChanged?.Invoke(Health);
+
+        if (Health == 0)
+            Died?.Invoke();
+    }
 
     /// <summary>
     /// Orienta al jugador hacia el cursor del ratón.

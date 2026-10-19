@@ -1,4 +1,5 @@
 using System;
+using Game.Enemy;
 using Godot;
 
 /// <summary>
@@ -8,9 +9,9 @@ using Godot;
 /// avanza en línea recta a <see cref="MovementSpeed"/> píxeles por segundo.
 /// </summary>
 /// <remarks>
-/// Ciclo de vida parcial (v1.0): la bala se libera solo al salir de la pantalla,
-/// mediante la señal <c>screen_exited</c> de <see cref="VisibleOnScreenNotifier2D"/>.
-/// Todavía no se destruye al impactar obstáculos ni enemigos.
+/// La bala se libera al salir de la pantalla, mediante la señal <c>screen_exited</c>
+/// de <see cref="VisibleOnScreenNotifier2D"/>, y al impactar a un enemigo.
+/// Los obstáculos todavía no la detienen.
 /// </remarks>
 public partial class Bullet : Area2D
 {
@@ -35,6 +36,23 @@ public partial class Bullet : Area2D
 	public override void _PhysicsProcess(double delta)
 	{
 		Position += Direction * MovementSpeed * (float)delta;
+	}
+
+	/// <summary>
+	/// Elimina al enemigo impactado y libera la bala.
+	/// </summary>
+	/// <param name="body">Cuerpo que entró en el área de la bala.</param>
+	/// <remarks>
+	/// Se ignoran los cuerpos que no son enemigos (por ejemplo, el propio jugador al
+	/// salir del cañón) para que la bala no se destruya antes de tiempo.
+	/// </remarks>
+	private void OnBodyEntered(Node2D body)
+	{
+		if (body is not EnemyRusher enemy)
+			return;
+
+		enemy.Die();
+		QueueFree();
 	}
 
 	/// <summary>

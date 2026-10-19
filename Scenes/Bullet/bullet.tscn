@@ -20,4 +20,5 @@ shape = SubResource("CircleShape2D_umiqv")
 
 [node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="." unique_id=1151246122]
 
+[connection signal="body_entered" from="." to="." method="OnBodyEntered"]
 [connection signal="screen_exited" from="VisibleOnScreenNotifier2D" to="." method="OnVisibleOnScreenNotifier2DScreenExited"]
