@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bf6wpxsllh58t"
-path="res://.godot/imported/hero_up.png-7bdf73c6e89dda1f4a08b46fc719140b.ctex"
+uid="uid://df6vaat3laqar"
+path="res://.godot/imported/enemy_slime_green_down.png-48274f8bcba7d613f50088ff8f435ff9.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Character/hero_up.png"
-dest_files=["res://.godot/imported/hero_up.png-7bdf73c6e89dda1f4a08b46fc719140b.ctex"]
+source_file="res://Assets/Enemy/enemy_slime_green_down.png"
+dest_files=["res://.godot/imported/enemy_slime_green_down.png-48274f8bcba7d613f50088ff8f435ff9.ctex"]
 
 [params]
 
