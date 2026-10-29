@@ -1,0 +1,12 @@
+[gd_scene format=3 uid="uid://v5xjtj16m8od"]
+
+[ext_resource type="Script" uid="uid://dpenrkj76yjgt" path="res://Scripts/Components/HitboxComponent.cs" id="1_hitbox"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_vnw7b"]
+radius = 12.0
+
+[node name="HitboxComponent" type="Area2D" unique_id=1135109075]
+script = ExtResource("1_hitbox")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1619129359]
+shape = SubResource("CircleShape2D_vnw7b")

@@ -57,7 +57,7 @@ Arena Cero es un twin-stick shooter minimalista para un jugador. El jugador cont
 
 ### 2.2 Enemigos
 
-Todos los enemigos otorgan al morir un puntaje aleatorio entre 10 y 50 puntos, que se suma al marcador global de la partida.
+Los enemigos solo otorgan su puntaje aleatorio (10–50 puntos) cuando mueren por una bala del jugador; el contacto con el jugador no otorga puntos.
 
 #### Tipo A: Rusher
 
@@ -68,7 +68,7 @@ Todos los enemigos otorgan al morir un puntaje aleatorio entre 10 y 50 puntos, q
 | **Comportamiento** | Persigue directamente al jugador |
 | **Velocidad**      | Alta (150% velocidad jugador)    |
 | **Vida**           | 1 golpe                          |
-| **Daño**           | -1 vida al contacto (explota)    |
+| **Daño**           | -1 vida al contacto (explota sin otorgar puntaje) |
 
 #### Tipo B: Sniper
 
@@ -79,6 +79,7 @@ Todos los enemigos otorgan al morir un puntaje aleatorio entre 10 y 50 puntos, q
 | **Comportamiento** | Se aleja del jugador, dispara proyectiles |
 | **Velocidad**      | Baja (50% velocidad jugador)              |
 | **Vida**           | 2 golpes                                  |
+| **Contacto**       | -1 vida al jugador; el enemigo no se destruye |
 | **Daño**           | -1 vida por proyectil                     |
 | **Cadencia**       | 1 disparo cada 1.5 segundos               |
 

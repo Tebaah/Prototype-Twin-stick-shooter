@@ -7,6 +7,7 @@
 [ext_resource type="Script" uid="uid://cmfudk2nxidl" path="res://Scripts/Enemy/State/MoveState.cs" id="5_sm5w3"]
 [ext_resource type="Script" uid="uid://b8e7c4i36rx74" path="res://Scripts/Enemy/State/LookingForTargetState.cs" id="6_cmput"]
 [ext_resource type="Script" uid="uid://xfhrusfv6qi0" path="res://Scripts/Enemy/State/AttackState.cs" id="7_sf2sc"]
+[ext_resource type="PackedScene" uid="uid://v5xjtj16m8od" path="res://Scenes/Components/hitbox_component.tscn" id="8_hitbox"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_rhioo"]
 radius = 16.03122
@@ -28,6 +29,8 @@ radius = 122.20065
 [node name="EnemyRusher" type="CharacterBody2D" unique_id=1409485549]
 script = ExtResource("1_d2cqo")
 Speed = 100.0
+MaxHealth = 2
+DestroyOnPlayerContact = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=614237224]
 shape = SubResource("CircleShape2D_rhioo")
@@ -36,16 +39,15 @@ shape = SubResource("CircleShape2D_rhioo")
 texture_filter = 1
 sprite_frames = SubResource("SpriteFrames_vnw7b")
 
+[node name="HitboxComponent" parent="." instance=ExtResource("8_hitbox")]
+Type = 1
+Radius = 18.0
+
 [node name="PlayerDetectionArea" type="Area2D" parent="." unique_id=1912757701]
 position = Vector2(-1, 0)
 collision_layer = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerDetectionArea" unique_id=1025304143]
-shape = SubResource("CircleShape2D_34rj1")
-
-[node name="BulletDetectionArea" type="Area2D" parent="." unique_id=1641259729]
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="BulletDetectionArea" unique_id=869855158]
 shape = SubResource("CircleShape2D_34rj1")
 
 [node name="MovementMachine" type="Node" parent="." unique_id=786194729 node_paths=PackedStringArray("_initialStateNode", "_bodyNode")]
