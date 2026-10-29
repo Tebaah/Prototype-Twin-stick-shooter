@@ -65,4 +65,4 @@ desktop.ini
 # Skills locales del agente; son herramientas de trabajo y no forman parte
 # del proyecto.
 # ---------------------------------------------------------------------------
-.opencode/
+.opencode*
