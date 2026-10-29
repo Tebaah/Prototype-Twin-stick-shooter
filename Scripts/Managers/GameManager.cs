@@ -1,15 +1,17 @@
 using Godot;
 using System;
+using System.Collections.Generic;
 
 /// <summary>
-/// Estado global de la partida: vidas del jugador, puntaje acumulado y fin de partida.
+/// Estado global de la partida: vidas, nivel, enemigos, puntaje y fin de partida.
 /// </summary>
 /// <remarks>
 /// Está registrado como autoload en <c>project.godot</c>, así que existe una única
 /// instancia accesible mediante <see cref="Instance"/> durante toda la sesión.
 /// El jugador se registra al entrar al árbol (<see cref="RegisterPlayer"/>) y el
-/// gestor replica sus vidas; los enemigos notifican su puntaje al morir
-/// (<see cref="AddScore"/>). La interfaz se suscribe a <see cref="LivesChanged"/>,
+/// gestor replica sus vidas; los enemigos se registran al aparecer y notifican su
+/// puntaje al morir (<see cref="AddScore"/>). La interfaz se suscribe a
+/// <see cref="LivesChanged"/>, <see cref="LevelChanged"/>, <see cref="EnemiesChanged"/>,
 /// <see cref="ScoreChanged"/> y <see cref="GameOver"/> para reflejar esos cambios.
 /// </remarks>
 public partial class GameManager : Node
@@ -23,17 +25,35 @@ public partial class GameManager : Node
 	/// <summary>Vidas restantes del jugador; siempre entre 0 y <see cref="MaxLives"/>.</summary>
 	public int Lives { get; private set; } = MaxLives;
 
+	/// <summary>Nivel actual de la partida; empieza en 1.</summary>
+	public int Level { get; private set; } = 1;
+
+	/// <summary>Total de enemigos generados en el nivel actual.</summary>
+	public int TotalEnemies { get; private set; }
+
+	/// <summary>Cantidad de enemigos vivos en el nivel actual.</summary>
+	public int EnemiesRemaining => _aliveEnemies.Count;
+
 	/// <summary>Puntaje acumulado por los enemigos eliminados.</summary>
 	public int Score { get; private set; }
 
 	/// <summary>Se emite cuando cambian las vidas, con el valor actual.</summary>
 	public event Action<int> LivesChanged;
 
+	/// <summary>Se emite cuando cambia el nivel, con el valor actual.</summary>
+	public event Action<int> LevelChanged;
+
+	/// <summary>Se emite cuando cambia el conteo de enemigos, con (restantes, total).</summary>
+	public event Action<int, int> EnemiesChanged;
+
 	/// <summary>Se emite cuando cambia el puntaje, con el valor actual.</summary>
 	public event Action<int> ScoreChanged;
 
 	/// <summary>Se emite una sola vez cuando el jugador se queda sin vidas.</summary>
 	public event Action GameOver;
+
+	/// <summary>Enemigos vivos registrados, usados para calcular los restantes.</summary>
+	private readonly HashSet<Node2D> _aliveEnemies = new();
 
 	/// <summary>Jugador vinculado actualmente, si lo hay.</summary>
 	private PlayerController _player;
@@ -81,6 +101,46 @@ public partial class GameManager : Node
 		_player.HealthChanged -= OnPlayerHealthChanged;
 		_player.Died -= OnPlayerDied;
 		_player = null;
+	}
+
+	/// <summary>Registra un enemigo vivo y actualiza el contador restantes/total.</summary>
+	/// <param name="enemy">Enemigo que acaba de entrar en escena.</param>
+	/// <remarks>
+	/// Si no quedaba ningún enemigo vivo se reinicia el total, de modo que una nueva
+	/// oleada o una recarga de escena no acumule los enemigos de la anterior.
+	/// </remarks>
+	public void RegisterEnemy(Node2D enemy)
+	{
+		if (enemy is null || !_aliveEnemies.Add(enemy))
+			return;
+
+		if (_aliveEnemies.Count == 1)
+			TotalEnemies = 0;
+
+		TotalEnemies++;
+		EnemiesChanged?.Invoke(EnemiesRemaining, TotalEnemies);
+	}
+
+	/// <summary>Quita un enemigo del conteo cuando muere o sale de escena.</summary>
+	/// <param name="enemy">Enemigo que deja de estar vivo.</param>
+	public void UnregisterEnemy(Node2D enemy)
+	{
+		if (enemy is null || !_aliveEnemies.Remove(enemy))
+			return;
+
+		EnemiesChanged?.Invoke(EnemiesRemaining, TotalEnemies);
+	}
+
+	/// <summary>Fija el nivel actual y avisa a la interfaz.</summary>
+	/// <param name="level">Nivel a mostrar; los valores menores que 1 se elevan a 1.</param>
+	public void SetLevel(int level)
+	{
+		int nextLevel = Math.Max(1, level);
+		if (nextLevel == Level)
+			return;
+
+		Level = nextLevel;
+		LevelChanged?.Invoke(Level);
 	}
 
 	/// <summary>Suma al marcador el puntaje de un enemigo eliminado.</summary>

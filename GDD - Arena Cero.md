@@ -57,6 +57,8 @@ Arena Cero es un twin-stick shooter minimalista para un jugador. El jugador cont
 
 ### 2.2 Enemigos
 
+Todos los enemigos otorgan al morir un puntaje aleatorio entre 10 y 50 puntos, que se suma al marcador global de la partida.
+
 #### Tipo A: Rusher
 
 | Característica     | Especificación                   |
@@ -170,13 +172,14 @@ Arena Cero es un twin-stick shooter minimalista para un jugador. El jugador cont
 
 ### HUD (v1.0)
 
-| Elemento               | Posición                   | Descripción                  |
-| ---------------------- | -------------------------- | ---------------------------- |
-| **Vida**               | Esquina superior izquierda | Corazones o número (ej: ♥♥♥) |
-| **Nivel**              | Centro superior            | "NIVEL 3"                    |
-| **Enemigos restantes** | Esquina superior derecha   | "3 / 10"                     |
-| **Game Over**          | Centro de pantalla         | Texto rojo, reinicio con R   |
-| **Level Clear**        | Centro de pantalla         | Texto verde, 1 segundo       |
+| Elemento               | Posición                         | Descripción                                                     |
+| ---------------------- | -------------------------------- | --------------------------------------------------------------- |
+| **Vida**               | Esquina superior izquierda       | Tres corazones (♥♥♥); se oculta uno por cada vida perdida       |
+| **Nivel**              | Superior, junto a las vidas      | "NIVEL 1"                                                       |
+| **Enemigos restantes** | Superior, después del nivel      | "ENEMIGOS: 3/3" (enemigos vivos / total del nivel)              |
+| **Puntaje**            | Esquina superior derecha         | "PUNTOS: 0"; acumula el puntaje aleatorio de cada enemigo caído |
+| **Game Over**          | Centro de pantalla               | Texto rojo, reinicio con R                                      |
+| **Level Clear**        | Centro de pantalla               | Texto verde, 1 segundo                                          |
 ### Diseños
 ![HUD](https://i.ibb.co/RkXBR914/Interfaz-grafica.png)
 ![Game Over](https://i.ibb.co/kF0jDw4/Interfaz-game-over.png)
@@ -202,7 +205,7 @@ Arena Cero es un twin-stick shooter minimalista para un jugador. El jugador cont
 - ❌ Animaciones (excepto movimiento básico)
 - ❌ Menús (inicio / opciones)
 - ❌ Power-ups o mejoras
-- ❌ Puntuación o récords
+- ❌ Récords o tablas de clasificación persistentes
 - ❌ Guardado de partida
 - ❌ Múltiples armas o tipos de disparo
 - ❌ Enemigos con IA compleja (pathfinding)
@@ -213,8 +216,10 @@ Arena Cero es un twin-stick shooter minimalista para un jugador. El jugador cont
 ### PERMITIDO si es SIMPLE
 
 - ✅ Diferentes colores para distinguir elementos
-- ✅ Contador de vidas (texto simple)
+- ✅ Contador de vidas con corazones
 - ✅ Indicador de nivel actual
+- ✅ Contador de enemigos restantes
+- ✅ Puntaje acumulado por enemigos eliminados
 - ✅ Reinicio con tecla R
 - ✅ Texto de Game Over / Level Clear
 

@@ -31,6 +31,13 @@ public partial class EnemyRusher : CharacterBody2D
 	public override void _Ready()
 	{
 		ScoreValue = GD.RandRange(MinScore, MaxScore);
+		GameManager.Instance?.RegisterEnemy(this);
+	}
+
+	/// <inheritdoc/>
+	public override void _ExitTree()
+	{
+		GameManager.Instance?.UnregisterEnemy(this);
 	}
 
 	/// <summary>

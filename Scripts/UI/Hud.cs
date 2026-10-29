@@ -1,7 +1,7 @@
 using Godot;
 
 /// <summary>
-/// HUD de la partida: vidas, puntaje y aviso de fin de partida.
+/// HUD de la partida: corazones de vida, nivel, enemigos restantes y puntaje.
 /// </summary>
 /// <remarks>
 /// Se suscribe a <see cref="GameManager"/> en <see cref="_Ready"/> y no consulta al
@@ -9,8 +9,14 @@ using Godot;
 /// </remarks>
 public partial class Hud : CanvasLayer
 {
-	/// <summary>Etiqueta de las vidas restantes.</summary>
-	private Label _livesLabel;
+	/// <summary>Corazones que representan las vidas restantes, en orden de izquierda a derecha.</summary>
+	private TextureRect[] _hearts;
+
+	/// <summary>Etiqueta del nivel actual.</summary>
+	private Label _levelLabel;
+
+	/// <summary>Etiqueta de enemigos restantes y total del nivel.</summary>
+	private Label _enemiesLabel;
 
 	/// <summary>Etiqueta del puntaje acumulado.</summary>
 	private Label _scoreLabel;
@@ -21,8 +27,15 @@ public partial class Hud : CanvasLayer
 	/// <inheritdoc/>
 	public override void _Ready()
 	{
-		_livesLabel = GetNode<Label>("LivesLabel");
-		_scoreLabel = GetNode<Label>("ScoreLabel");
+		_hearts = new[]
+		{
+			GetNode<TextureRect>("HudBar/Hearts/Heart1"),
+			GetNode<TextureRect>("HudBar/Hearts/Heart2"),
+			GetNode<TextureRect>("HudBar/Hearts/Heart3")
+		};
+		_levelLabel = GetNode<Label>("HudBar/LevelLabel");
+		_enemiesLabel = GetNode<Label>("HudBar/EnemiesLabel");
+		_scoreLabel = GetNode<Label>("HudBar/ScoreLabel");
 		_gameOverLabel = GetNode<Label>("GameOverLabel");
 
 		GameManager gameManager = GameManager.Instance;
@@ -33,10 +46,14 @@ public partial class Hud : CanvasLayer
 		}
 
 		gameManager.LivesChanged += UpdateLives;
+		gameManager.LevelChanged += UpdateLevel;
+		gameManager.EnemiesChanged += UpdateEnemies;
 		gameManager.ScoreChanged += UpdateScore;
 		gameManager.GameOver += ShowGameOver;
 
 		UpdateLives(gameManager.Lives);
+		UpdateLevel(gameManager.Level);
+		UpdateEnemies(gameManager.EnemiesRemaining, gameManager.TotalEnemies);
 		UpdateScore(gameManager.Score);
 		_gameOverLabel.Visible = false;
 	}
@@ -49,13 +66,35 @@ public partial class Hud : CanvasLayer
 			return;
 
 		gameManager.LivesChanged -= UpdateLives;
+		gameManager.LevelChanged -= UpdateLevel;
+		gameManager.EnemiesChanged -= UpdateEnemies;
 		gameManager.ScoreChanged -= UpdateScore;
 		gameManager.GameOver -= ShowGameOver;
 	}
 
-	/// <summary>Refleja en la etiqueta la vida reportada por el gestor.</summary>
+	/// <summary>
+	/// Muestra tantos corazones como vidas queden y oculta los sobrantes.
+	/// </summary>
 	/// <param name="lives">Vidas restantes.</param>
-	private void UpdateLives(int lives) => _livesLabel.Text = $"VIDAS: {lives}";
+	/// <remarks>
+	/// Se cambia el alfa en lugar de <see cref="CanvasItem.Visible"/> para que el
+	/// contenedor reserve siempre el espacio de los tres corazones y el resto del
+	/// HUD no se desplace al perder una vida.
+	/// </remarks>
+	private void UpdateLives(int lives)
+	{
+		for (int i = 0; i < _hearts.Length; i++)
+			_hearts[i].Modulate = new Color(1f, 1f, 1f, i < lives ? 1f : 0f);
+	}
+
+	/// <summary>Refleja en la etiqueta el nivel reportado por el gestor.</summary>
+	/// <param name="level">Nivel actual.</param>
+	private void UpdateLevel(int level) => _levelLabel.Text = $"NIVEL: {level}";
+
+	/// <summary>Refleja en la etiqueta los enemigos restantes y el total del nivel.</summary>
+	/// <param name="remaining">Enemigos vivos.</param>
+	/// <param name="total">Enemigos generados en el nivel.</param>
+	private void UpdateEnemies(int remaining, int total) => _enemiesLabel.Text = $"ENEMIGOS: {remaining}/{total}";
 
 	/// <summary>Refleja en la etiqueta el puntaje reportado por el gestor.</summary>
 	/// <param name="score">Puntaje acumulado.</param>

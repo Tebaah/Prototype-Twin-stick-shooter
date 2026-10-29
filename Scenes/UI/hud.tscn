@@ -1,30 +1,69 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://Scripts/UI/Hud.cs" id="1_hud"]
+[ext_resource type="Texture2D" path="res://Assets/HUD/heart.png" id="2_heart"]
 
 [node name="Hud" type="CanvasLayer"]
 script = ExtResource("1_hud")
 
-[node name="LivesLabel" type="Label" parent="."]
-offset_left = 16.0
-offset_top = 16.0
-offset_right = 316.0
-offset_bottom = 48.0
-theme_override_font_sizes/font_size = 28
-text = "VIDAS: 3"
-
-[node name="ScoreLabel" type="Label" parent="."]
-anchors_preset = 1
-anchor_left = 1.0
+[node name="HudBar" type="HBoxContainer" parent="."]
+anchors_preset = 10
 anchor_right = 1.0
-offset_left = -316.0
-offset_top = 16.0
+offset_left = 16.0
+offset_top = 12.0
 offset_right = -16.0
-offset_bottom = 48.0
-grow_horizontal = 0
-theme_override_font_sizes/font_size = 28
+offset_bottom = 52.0
+grow_horizontal = 2
+theme_override_constants/separation = 32
+
+[node name="Hearts" type="HBoxContainer" parent="HudBar"]
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_constants/separation = 4
+
+[node name="Heart1" type="TextureRect" parent="HudBar/Hearts"]
+layout_mode = 2
+custom_minimum_size = Vector2(32, 32)
+size_flags_vertical = 4
+texture_filter = 1
+texture = ExtResource("2_heart")
+
+[node name="Heart2" type="TextureRect" parent="HudBar/Hearts"]
+layout_mode = 2
+custom_minimum_size = Vector2(32, 32)
+size_flags_vertical = 4
+texture_filter = 1
+texture = ExtResource("2_heart")
+
+[node name="Heart3" type="TextureRect" parent="HudBar/Hearts"]
+layout_mode = 2
+custom_minimum_size = Vector2(32, 32)
+size_flags_vertical = 4
+texture_filter = 1
+texture = ExtResource("2_heart")
+
+[node name="LevelLabel" type="Label" parent="HudBar"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "NIVEL: 1"
+vertical_alignment = 1
+
+[node name="EnemiesLabel" type="Label" parent="HudBar"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "ENEMIGOS: 3/3"
+vertical_alignment = 1
+
+[node name="Spacer" type="Control" parent="HudBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ScoreLabel" type="Label" parent="HudBar"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
 text = "PUNTOS: 0"
 horizontal_alignment = 2
+vertical_alignment = 1
 
 [node name="GameOverLabel" type="Label" parent="."]
 anchors_preset = 8
