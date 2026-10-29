@@ -1,0 +1,26 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" uid="uid://b5midg87hokn5" path="res://Scripts/Bullet/Bullet.cs" id="1_bullet"]
+[ext_resource type="Texture2D" uid="uid://340qdygac40q" path="res://Assets/Bullet/bullet_player.png" id="2_texture"]
+[ext_resource type="PackedScene" uid="uid://v5xjtj16m8od" path="res://Scenes/Components/hitbox_component.tscn" id="3_hitbox"]
+
+[node name="EnemyBullet" type="Area2D"]
+collision_layer = 0
+collision_mask = 0
+script = ExtResource("1_bullet")
+MovementSpeed = 250.0
+BulletType = 3
+AimAtMouse = false
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture_filter = 1
+modulate = Color(1, 0.35, 0.35, 1)
+texture = ExtResource("2_texture")
+
+[node name="HitboxComponent" parent="." instance=ExtResource("3_hitbox")]
+Type = 3
+Radius = 8.0
+
+[node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="."]
+
+[connection signal="screen_exited" from="VisibleOnScreenNotifier2D" to="." method="OnVisibleOnScreenNotifier2DScreenExited"]

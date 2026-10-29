@@ -9,6 +9,7 @@
 [ext_resource type="Script" uid="uid://bowuelldkp727" path="res://Scripts/Player/States/ChargeState.cs" id="6_0u5uq"]
 [ext_resource type="Script" uid="uid://bex11aidswhou" path="res://Scripts/Player/States/AttackState.cs" id="7_jlvik"]
 [ext_resource type="PackedScene" uid="uid://dvuuwhdqw4ygu" path="res://Scenes/Bullet/bullet.tscn" id="9_gk6dx"]
+[ext_resource type="PackedScene" uid="uid://v5xjtj16m8od" path="res://Scenes/Components/hitbox_component.tscn" id="10_hitbox"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_vnw7b"]
 animations = [{
@@ -34,6 +35,10 @@ animation = &"idle"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=285513500]
 shape = SubResource("CircleShape2D_vnw7b")
+
+[node name="HitboxComponent" parent="." instance=ExtResource("10_hitbox")]
+Type = 0
+Radius = 12.0
 
 [node name="Marker2D" type="Marker2D" parent="." unique_id=1927930730]
 position = Vector2(0, -17)
