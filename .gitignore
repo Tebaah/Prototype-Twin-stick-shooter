@@ -59,3 +59,10 @@ desktop.ini
 # Reglas
 # ---------------------------------------------------------------------------
 .clinerules*
+
+# ---------------------------------------------------------------------------
+# OpenCode
+# Skills locales del agente; son herramientas de trabajo y no forman parte
+# del proyecto.
+# ---------------------------------------------------------------------------
+.opencode/
