@@ -9,6 +9,7 @@
 [ext_resource type="Script" uid="uid://xfhrusfv6qi0" path="res://Scripts/Enemy/State/AttackState.cs" id="7_81si4"]
 [ext_resource type="PackedScene" uid="uid://v5xjtj16m8od" path="res://Scenes/Components/hitbox_component.tscn" id="8_hitbox"]
 [ext_resource type="PackedScene" uid="uid://dpnq65ibht4aa" path="res://Scenes/Components/health_component.tscn" id="9_health"]
+[ext_resource type="PackedScene" path="res://Scenes/Components/detection_component.tscn" id="10_detection"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_rhioo"]
 radius = 16.03122
@@ -23,9 +24,6 @@ animations = [{
 "name": &"default",
 "speed": 5.0
 }]
-
-[sub_resource type="CircleShape2D" id="CircleShape2D_34rj1"]
-radius = 122.20065
 
 [node name="EnemyRusher" type="CharacterBody2D" unique_id=1409485549]
 script = ExtResource("1_gvdhh")
@@ -45,12 +43,9 @@ sprite_frames = SubResource("SpriteFrames_vnw7b")
 Type = 1
 Radius = 18.0
 
-[node name="PlayerDetectionArea" type="Area2D" parent="." unique_id=1912757701]
+[node name="DetectionComponent" parent="." instance=ExtResource("10_detection")]
 position = Vector2(-1, 0)
-collision_layer = 2
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerDetectionArea" unique_id=1025304143]
-shape = SubResource("CircleShape2D_34rj1")
+Radius = 122.20065
 
 [node name="MovementMachine" type="Node" parent="." unique_id=786194729 node_paths=PackedStringArray("_initialStateNode", "_bodyNode")]
 script = ExtResource("3_v6f73")
@@ -73,9 +68,3 @@ script = ExtResource("6_u1ku0")
 
 [node name="AttackState" type="Node" parent="AttackMachine" unique_id=1378765181]
 script = ExtResource("7_81si4")
-
-[connection signal="body_entered" from="PlayerDetectionArea" to="MovementMachine/IdleState" method="OnBodyEntered"]
-[connection signal="body_entered" from="PlayerDetectionArea" to="MovementMachine/MoveState" method="OnBodyEntered"]
-[connection signal="body_entered" from="PlayerDetectionArea" to="AttackMachine/LookingForTargetState" method="OnBodyEntered"]
-[connection signal="body_exited" from="PlayerDetectionArea" to="MovementMachine/MoveState" method="OnBodyExited"]
-[connection signal="body_exited" from="PlayerDetectionArea" to="AttackMachine/AttackState" method="OnBodyExited"]

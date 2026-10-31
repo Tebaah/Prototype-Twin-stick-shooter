@@ -1,15 +1,20 @@
-using System;
-using Godot;
 namespace Game.Enemy.States;
 
-public partial class LookingForTargetState : State<EnemyRusher>
+/// <summary>
+/// Estado de espera entre perder el objetivo y volver a detectarlo.
+/// </summary>
+/// <remarks>
+/// Si <see cref="DetectionComponent"/> vuelve a detectar al jugador, pasa a
+/// <c>AttackState</c>.
+/// </remarks>
+public partial class LookingForTargetState : EnemyState
 {
-
-	private void OnBodyEntered(Node2D target)
+	/// <inheritdoc/>
+	public override void PhysicsUpdate(double delta)
 	{
-		if (target.IsInGroup("Player"))
-		{
+		base.PhysicsUpdate(delta);
+
+		if (Body.Detection.HasTarget)
 			Machine.TransitionTo("AttackState");
-		}
 	}
 }
