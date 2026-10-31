@@ -22,8 +22,7 @@ Speed = 200.0
 position = Vector2(128, 448)
 Speed = 200.0
 
-[node name="EnemyRusher3" parent="." unique_id=883414041 instance=ExtResource("5_ad02b")]
-position = Vector2(640, 512)
-Speed = 200.0
-
 [node name="Hud" parent="." unique_id=1995743400 instance=ExtResource("6_hud")]
+
+[node name="EnemyShooter" parent="." unique_id=564685665 instance=ExtResource("5_ad02b")]
+position = Vector2(558, 550)

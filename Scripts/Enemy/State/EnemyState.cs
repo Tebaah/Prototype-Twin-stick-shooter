@@ -4,9 +4,9 @@ namespace Game.Enemy;
 
 /// <summary>
 /// Base de los estados del enemigo. El cuerpo sobre el que actúan es un
-/// <see cref="EnemyRusher"/>; <see cref="EnemyStateMachine"/> orquesta las
+/// <see cref="EnemyController"/>; <see cref="EnemyStateMachine"/> orquesta las
 /// transiciones entre estados.
 /// </summary>
-public partial class EnemyState : State<EnemyRusher>
+public partial class EnemyState : State<EnemyController>
 {
 }
