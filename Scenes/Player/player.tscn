@@ -10,6 +10,7 @@
 [ext_resource type="Script" uid="uid://bex11aidswhou" path="res://Scripts/Player/States/AttackState.cs" id="7_jlvik"]
 [ext_resource type="PackedScene" uid="uid://dvuuwhdqw4ygu" path="res://Scenes/Bullet/bullet.tscn" id="9_gk6dx"]
 [ext_resource type="PackedScene" uid="uid://v5xjtj16m8od" path="res://Scenes/Components/hitbox_component.tscn" id="10_hitbox"]
+[ext_resource type="PackedScene" uid="uid://dpnq65ibht4aa" path="res://Scenes/Components/health_component.tscn" id="11_health"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_vnw7b"]
 animations = [{
@@ -27,6 +28,9 @@ radius = 12.0
 
 [node name="Player" type="CharacterBody2D" unique_id=258991823]
 script = ExtResource("1_jlvik")
+
+[node name="HealthComponent" parent="." instance=ExtResource("11_health")]
+InitialMaxHealth = 3
 
 [node name="Animation" type="AnimatedSprite2D" parent="." unique_id=1226598149]
 texture_filter = 1

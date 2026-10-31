@@ -8,6 +8,7 @@
 [ext_resource type="Script" uid="uid://b8e7c4i36rx74" path="res://Scripts/Enemy/State/LookingForTargetState.cs" id="6_cmput"]
 [ext_resource type="Script" uid="uid://xfhrusfv6qi0" path="res://Scripts/Enemy/State/AttackState.cs" id="7_sf2sc"]
 [ext_resource type="PackedScene" uid="uid://v5xjtj16m8od" path="res://Scenes/Components/hitbox_component.tscn" id="8_hitbox"]
+[ext_resource type="PackedScene" uid="uid://dpnq65ibht4aa" path="res://Scenes/Components/health_component.tscn" id="9_health"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_rhioo"]
 radius = 16.03122
@@ -29,8 +30,10 @@ radius = 122.20065
 [node name="EnemyRusher" type="CharacterBody2D" unique_id=1409485549]
 script = ExtResource("1_d2cqo")
 Speed = 100.0
-MaxHealth = 2
 DestroyOnPlayerContact = false
+
+[node name="HealthComponent" parent="." instance=ExtResource("9_health")]
+InitialMaxHealth = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=614237224]
 shape = SubResource("CircleShape2D_rhioo")

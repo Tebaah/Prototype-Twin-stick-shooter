@@ -12,14 +12,17 @@ public partial class PlayerController : CharacterBody2D
     public Vector2 DirectionOfMovement { get; set; }
     public Marker2D Marker2D { get; set; }
 
-    /// <summary>Vida inicial del jugador (GDD 2.1: 3 puntos).</summary>
-    public const int MaxHealth = GameManager.MaxLives;
+    /// <summary>Componente que administra la salud del jugador.</summary>
+    public HealthComponent HealthComponent { get; private set; }
 
     /// <summary>Vida restante del jugador, entre 0 y <see cref="MaxHealth"/>.</summary>
-    public int Health { get; private set; } = MaxHealth;
+    public int Health => HealthComponent.CurrentHealth;
 
-    /// <summary>Se emite cuando cambia la vida, con el valor actual.</summary>
-    public event Action<int> HealthChanged;
+    /// <summary>Vida máxima actual del jugador.</summary>
+    public int MaxHealth => HealthComponent.MaxHealth;
+
+    /// <summary>Se emite cuando cambia la vida, con (vida actual, vida máxima).</summary>
+    public event Action<int, int> HealthChanged;
 
     /// <summary>Se emite una sola vez cuando la vida llega a 0.</summary>
     public event Action Died;
@@ -32,11 +35,22 @@ public partial class PlayerController : CharacterBody2D
     {
         base._Ready();
         Marker2D = GetNode<Marker2D>("Marker2D");
+
+        HealthComponent = GetNode<HealthComponent>("HealthComponent");
+        HealthComponent.HealthChanged += OnHealthChanged;
+        HealthComponent.Died += OnDied;
+
         GameManager.Instance?.RegisterPlayer(this);
     }
 
     public override void _ExitTree()
     {
+        if (HealthComponent is not null)
+        {
+            HealthComponent.HealthChanged -= OnHealthChanged;
+            HealthComponent.Died -= OnDied;
+        }
+
         GameManager.Instance?.UnregisterPlayer(this);
     }
 
@@ -51,24 +65,20 @@ public partial class PlayerController : CharacterBody2D
     #region Custom Methods
 
     /// <summary>
-    /// Descuenta vida al jugador y notifica a los interesados.
+    /// Descuenta vida al jugador a través de su <see cref="HealthComponent"/>.
     /// </summary>
     /// <param name="damage">Puntos de vida a descontar; los valores no positivos se ignoran.</param>
-    /// <remarks>
-    /// La vida nunca baja de 0 y <see cref="Died"/> se emite una sola vez, aunque
-    /// el jugador reciba daño en fotogramas posteriores.
-    /// </remarks>
-    public void TakeDamage(int damage)
-    {
-        if (damage <= 0 || Health <= 0)
-            return;
+    public void TakeDamage(int damage) => HealthComponent.TakeDamage(damage);
 
-        Health = Math.Max(0, Health - damage);
-        HealthChanged?.Invoke(Health);
+    /// <summary>
+    /// Reenvía el cambio de salud con la firma que consume el <see cref="GameManager"/>.
+    /// </summary>
+    /// <param name="current">Vida actual tras el cambio.</param>
+    /// <param name="max">Vida máxima actual.</param>
+    private void OnHealthChanged(int current, int max) => HealthChanged?.Invoke(current, max);
 
-        if (Health == 0)
-            Died?.Invoke();
-    }
+    /// <summary>Reenvía la muerte del componente de salud.</summary>
+    private void OnDied() => Died?.Invoke();
 
     /// <summary>
     /// Orienta al jugador hacia el cursor del ratón.
