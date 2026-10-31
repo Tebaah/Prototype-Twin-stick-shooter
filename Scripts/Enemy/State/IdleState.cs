@@ -1,10 +1,13 @@
-using System;
 using Godot;
 namespace Game.Enemy.States;
 
 /// <summary>
 /// Estado de reposo: el enemigo permanece inmóvil hasta detectar al jugador.
 /// </summary>
+/// <remarks>
+/// Consulta <see cref="DetectionComponent.HasTarget"/> y pasa a <c>MoveState</c>
+/// cuando el jugador entra en el área.
+/// </remarks>
 public partial class IdleState : EnemyState
 {
 	/// <inheritdoc/>
@@ -13,13 +16,12 @@ public partial class IdleState : EnemyState
 		Body.Velocity = Vector2.Zero;
 	}
 
-	/// <summary>Al detectar al jugador dentro del área, pasa a perseguirlo.</summary>
-	/// <param name="target">Cuerpo que entró en el área de detección.</param>
-	public void OnBodyEntered(Node2D target)
+	/// <inheritdoc/>
+	public override void PhysicsUpdate(double delta)
 	{
-		if (target.IsInGroup("Player"))
-		{
+		base.PhysicsUpdate(delta);
+
+		if (Body.Detection.HasTarget)
 			Machine.TransitionTo("MoveState");
-		}
 	}
 }

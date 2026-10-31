@@ -11,6 +11,8 @@ namespace Game.Enemy;
 /// este cuerpo: el jugador pierde vida y el enemigo puede destruirse según
 /// <see cref="DestroyOnPlayerContact"/>. La salud la administra su
 /// <see cref="HealthComponent"/>; al agotarse, el enemigo muere y otorga puntaje.
+/// La presencia del jugador la administra su <see cref="DetectionComponent"/>;
+/// cada estado consulta el objetivo para decidir su transición.
 /// </remarks>
 public partial class EnemyRusher : CharacterBody2D
 {
@@ -41,6 +43,9 @@ public partial class EnemyRusher : CharacterBody2D
 	/// <summary>Componente que administra la salud del enemigo.</summary>
 	public HealthComponent HealthComponent { get; private set; }
 
+	/// <summary>Componente que detecta al jugador dentro del área de persecución.</summary>
+	public DetectionComponent Detection { get; private set; }
+
 	/// <summary>Vida restante del enemigo.</summary>
 	public int Health => HealthComponent.CurrentHealth;
 
@@ -61,6 +66,8 @@ public partial class EnemyRusher : CharacterBody2D
 	{
 		HealthComponent = GetNode<HealthComponent>("HealthComponent");
 		HealthComponent.Died += OnHealthDied;
+
+		Detection = GetNode<DetectionComponent>("DetectionComponent");
 
 		ScoreValue = GD.RandRange(MinScore, MaxScore);
 		GameManager.Instance?.RegisterEnemy(this);
