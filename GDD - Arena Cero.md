@@ -175,7 +175,7 @@ Los enemigos solo otorgan su puntaje aleatorio (10–50 puntos) cuando mueren po
 
 | Elemento               | Posición                         | Descripción                                                     |
 | ---------------------- | -------------------------------- | --------------------------------------------------------------- |
-| **Vida**               | Esquina superior izquierda       | Tres corazones (♥♥♥); se oculta uno por cada vida perdida       |
+| **Vida**               | Esquina superior izquierda       | Un corazón por punto de salud máxima (3 al inicio); se oculta uno por cada vida perdida |
 | **Nivel**              | Superior, junto a las vidas      | "NIVEL 1"                                                       |
 | **Enemigos restantes** | Superior, después del nivel      | "ENEMIGOS: 3/3" (enemigos vivos / total del nivel)              |
 | **Puntaje**            | Esquina superior derecha         | "PUNTOS: 0"; acumula el puntaje aleatorio de cada enemigo caído |
