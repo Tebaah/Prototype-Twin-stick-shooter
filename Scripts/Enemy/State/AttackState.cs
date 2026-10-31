@@ -11,6 +11,20 @@ namespace Game.Enemy.States;
 public partial class AttackState : EnemyState
 {
 	/// <inheritdoc/>
+	public override void Enter()
+	{
+		base.Enter();
+		Body.OnAttackEnter();
+	}
+
+	/// <inheritdoc/>
+	public override void Exit()
+	{
+		Body.OnAttackExit();
+		base.Exit();
+	}
+
+	/// <inheritdoc/>
 	public override void PhysicsUpdate(double delta)
 	{
 		base.PhysicsUpdate(delta);
