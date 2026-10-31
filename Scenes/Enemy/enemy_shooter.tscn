@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://c4l3grn5ossmq"]
 
-[ext_resource type="Script" uid="uid://t4vjeibg2ru1" path="res://Scripts/Enemy/EnemyRusher.cs" id="1_d2cqo"]
+[ext_resource type="Script" path="res://Scripts/Enemy/EnemyShooter.cs" id="1_d2cqo"]
 [ext_resource type="Texture2D" uid="uid://b7db0875f5jva" path="res://Assets/Enemy/fire_enemy.png" id="2_d2cqo"]
 [ext_resource type="Script" uid="uid://xxlu2wcraauv" path="res://Scripts/Enemy/State/EnemyStateMachine.cs" id="3_1xsn6"]
 [ext_resource type="Script" uid="uid://dqqicj4qyj8g2" path="res://Scripts/Enemy/State/IdleState.cs" id="4_70frf"]
@@ -9,10 +9,11 @@
 [ext_resource type="Script" uid="uid://xfhrusfv6qi0" path="res://Scripts/Enemy/State/AttackState.cs" id="7_sf2sc"]
 [ext_resource type="PackedScene" uid="uid://v5xjtj16m8od" path="res://Scenes/Components/hitbox_component.tscn" id="8_hitbox"]
 [ext_resource type="PackedScene" uid="uid://dpnq65ibht4aa" path="res://Scenes/Components/health_component.tscn" id="9_health"]
-[ext_resource type="PackedScene" path="res://Scenes/Components/detection_component.tscn" id="10_detection"]
+[ext_resource type="PackedScene" uid="uid://dkiyeky7embqw" path="res://Scenes/Components/detection_component.tscn" id="10_detection"]
+[ext_resource type="PackedScene" path="res://Scenes/Bullet/enemy_bullet.tscn" id="11_bullet"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_rhioo"]
-radius = 16.03122
+radius = 16.0
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_vnw7b"]
 animations = [{
@@ -25,13 +26,11 @@ animations = [{
 "speed": 5.0
 }]
 
-[node name="EnemyRusher" type="CharacterBody2D" unique_id=1409485549]
+[node name="EnemyShooter" type="CharacterBody2D" unique_id=1409485549]
 script = ExtResource("1_d2cqo")
 Speed = 100.0
-DestroyOnPlayerContact = false
-
-[node name="HealthComponent" parent="." instance=ExtResource("9_health")]
-InitialMaxHealth = 2
+FireInterval = 1.5
+BulletScene = ExtResource("11_bullet")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=614237224]
 shape = SubResource("CircleShape2D_rhioo")
@@ -40,13 +39,19 @@ shape = SubResource("CircleShape2D_rhioo")
 texture_filter = 1
 sprite_frames = SubResource("SpriteFrames_vnw7b")
 
-[node name="HitboxComponent" parent="." instance=ExtResource("8_hitbox")]
-Type = 1
-Radius = 18.0
+[node name="Marker2D" type="Marker2D" parent="." unique_id=1536197833]
+position = Vector2(0, 16)
 
-[node name="DetectionComponent" parent="." instance=ExtResource("10_detection")]
+[node name="HealthComponent" parent="." unique_id=1577503859 instance=ExtResource("9_health")]
+InitialMaxHealth = 2
+
+[node name="HitboxComponent" parent="." unique_id=501298681 instance=ExtResource("8_hitbox")]
+Type = 1
+Radius = 16.0
+
+[node name="DetectionComponent" parent="." unique_id=778758667 instance=ExtResource("10_detection")]
 position = Vector2(-1, 0)
-Radius = 122.20065
+Radius = 180.0
 
 [node name="MovementMachine" type="Node" parent="." unique_id=786194729 node_paths=PackedStringArray("_initialStateNode", "_bodyNode")]
 script = ExtResource("3_1xsn6")

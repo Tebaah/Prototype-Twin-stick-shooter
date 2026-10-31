@@ -65,7 +65,7 @@ public partial class Bullet : Area2D
 
 		if (_hitbox.Type == HitboxType.PlayerBullet
 			&& other.Type == HitboxType.Enemy
-			&& other.Entity is EnemyRusher enemy)
+			&& other.Entity is EnemyController enemy)
 		{
 			_hasHit = true;
 			enemy.TakeDamage(_hitbox.Damage);
