@@ -1,4 +1,3 @@
-using System;
 using Godot;
 namespace Game.Enemy;
 
@@ -10,8 +9,8 @@ namespace Game.Enemy;
 /// <remarks>
 /// El daño por contacto lo detecta su <see cref="HitboxComponent"/> y lo resuelve
 /// este cuerpo: el jugador pierde vida y el enemigo puede destruirse según
-/// <see cref="DestroyOnPlayerContact"/>. Los enemigos con más de una vida solo
-/// mueren al agotar <see cref="Health"/> por impactos de bala.
+/// <see cref="DestroyOnPlayerContact"/>. La salud la administra su
+/// <see cref="HealthComponent"/>; al agotarse, el enemigo muere y otorga puntaje.
 /// </remarks>
 public partial class EnemyRusher : CharacterBody2D
 {
@@ -23,9 +22,6 @@ public partial class EnemyRusher : CharacterBody2D
 
 	/// <summary>Puntaje máximo que puede otorgar este enemigo al morir.</summary>
 	[Export] public int MaxScore { get; set; } = 50;
-
-	/// <summary>Vidas del enemigo; al llegar a cero se destruye y otorga puntaje.</summary>
-	[Export] public int MaxHealth { get; set; } = 1;
 
 	/// <summary>Vidas que descuenta el contacto con el jugador.</summary>
 	[Export] public int ContactDamage { get; set; } = 1;
@@ -42,8 +38,14 @@ public partial class EnemyRusher : CharacterBody2D
 	/// <summary>Dirección unitaria de persecución, recalculada por el estado activo.</summary>
 	public Vector2 Direction { get; set; } = Vector2.Zero;
 
+	/// <summary>Componente que administra la salud del enemigo.</summary>
+	public HealthComponent HealthComponent { get; private set; }
+
 	/// <summary>Vida restante del enemigo.</summary>
-	public int Health { get; private set; }
+	public int Health => HealthComponent.CurrentHealth;
+
+	/// <summary>Vida máxima actual del enemigo.</summary>
+	public int MaxHealth => HealthComponent.MaxHealth;
 
 	/// <summary>Puntaje aleatorio asignado a esta instancia al entrar en escena.</summary>
 	public int ScoreValue { get; private set; }
@@ -57,7 +59,9 @@ public partial class EnemyRusher : CharacterBody2D
 	/// <inheritdoc/>
 	public override void _Ready()
 	{
-		Health = Math.Max(1, MaxHealth);
+		HealthComponent = GetNode<HealthComponent>("HealthComponent");
+		HealthComponent.Died += OnHealthDied;
+
 		ScoreValue = GD.RandRange(MinScore, MaxScore);
 		GameManager.Instance?.RegisterEnemy(this);
 
@@ -68,19 +72,20 @@ public partial class EnemyRusher : CharacterBody2D
 	/// <inheritdoc/>
 	public override void _ExitTree()
 	{
+		if (HealthComponent is not null)
+			HealthComponent.Died -= OnHealthDied;
+
 		GameManager.Instance?.UnregisterEnemy(this);
 	}
 
-	/// <summary>Descuenta vida al enemigo y lo destruye si llega a cero.</summary>
+	/// <summary>Descuenta vida al enemigo a través de su <see cref="HealthComponent"/>.</summary>
 	/// <param name="damage">Daño recibido; los valores no positivos se ignoran.</param>
 	public void TakeDamage(int damage)
 	{
-		if (_isDead || damage <= 0)
+		if (_isDead)
 			return;
 
-		Health = Math.Max(0, Health - damage);
-		if (Health == 0)
-			Die();
+		HealthComponent.TakeDamage(damage);
 	}
 
 	/// <summary>
@@ -104,6 +109,9 @@ public partial class EnemyRusher : CharacterBody2D
 
 		QueueFree();
 	}
+
+	/// <summary>Resuelve la muerte cuando el componente de salud llega a cero.</summary>
+	private void OnHealthDied() => Die();
 
 	/// <summary>Resuelve el contacto con el jugador cuando el hitbox lo detecta.</summary>
 	/// <param name="other">Hitbox que entró en el área del enemigo.</param>

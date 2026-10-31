@@ -16,14 +16,17 @@ using System.Collections.Generic;
 /// </remarks>
 public partial class GameManager : Node
 {
-	/// <summary>Número de vidas del jugador al iniciar la partida.</summary>
-	public const int MaxLives = 3;
+	/// <summary>Número de vidas con el que inicia la partida.</summary>
+	public const int DefaultMaxLives = 3;
 
 	/// <summary>Instancia activa del gestor; <c>null</c> si el autoload no está cargado.</summary>
 	public static GameManager Instance { get; private set; }
 
+	/// <summary>Vidas máximas actuales del jugador; puede aumentar con su salud máxima.</summary>
+	public int MaxLives { get; private set; } = DefaultMaxLives;
+
 	/// <summary>Vidas restantes del jugador; siempre entre 0 y <see cref="MaxLives"/>.</summary>
-	public int Lives { get; private set; } = MaxLives;
+	public int Lives { get; private set; } = DefaultMaxLives;
 
 	/// <summary>Nivel actual de la partida; empieza en 1.</summary>
 	public int Level { get; private set; } = 1;
@@ -37,8 +40,8 @@ public partial class GameManager : Node
 	/// <summary>Puntaje acumulado por los enemigos eliminados.</summary>
 	public int Score { get; private set; }
 
-	/// <summary>Se emite cuando cambian las vidas, con el valor actual.</summary>
-	public event Action<int> LivesChanged;
+	/// <summary>Se emite cuando cambian las vidas, con (vidas actuales, vidas máximas).</summary>
+	public event Action<int, int> LivesChanged;
 
 	/// <summary>Se emite cuando cambia el nivel, con el valor actual.</summary>
 	public event Action<int> LevelChanged;
@@ -85,7 +88,7 @@ public partial class GameManager : Node
 		_player.HealthChanged += OnPlayerHealthChanged;
 		_player.Died += OnPlayerDied;
 
-		SetLives(_player.Health);
+		SetLives(_player.Health, _player.MaxHealth);
 	}
 
 	/// <summary>
@@ -154,18 +157,21 @@ public partial class GameManager : Node
 		ScoreChanged?.Invoke(Score);
 	}
 
-	/// <summary>Replica en el gestor la vida que reporta el jugador.</summary>
+	/// <summary>Replica en el gestor la vida y el máximo que reporta el jugador.</summary>
 	/// <param name="health">Vida restante reportada por el jugador.</param>
-	private void OnPlayerHealthChanged(int health) => SetLives(health);
+	/// <param name="maxHealth">Vida máxima actual del jugador.</param>
+	private void OnPlayerHealthChanged(int health, int maxHealth) => SetLives(health, maxHealth);
 
 	/// <summary>Propaga el fin de partida cuando el jugador se queda sin vidas.</summary>
 	private void OnPlayerDied() => GameOver?.Invoke();
 
 	/// <summary>Fija las vidas dentro del rango permitido y avisa a la interfaz.</summary>
 	/// <param name="lives">Vidas reportadas.</param>
-	private void SetLives(int lives)
+	/// <param name="maxLives">Vidas máximas actuales; debe ser al menos 1.</param>
+	private void SetLives(int lives, int maxLives)
 	{
+		MaxLives = Math.Max(1, maxLives);
 		Lives = Math.Clamp(lives, 0, MaxLives);
-		LivesChanged?.Invoke(Lives);
+		LivesChanged?.Invoke(Lives, MaxLives);
 	}
 }

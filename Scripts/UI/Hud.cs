@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Godot;
 
 /// <summary>
@@ -6,11 +7,18 @@ using Godot;
 /// <remarks>
 /// Se suscribe a <see cref="GameManager"/> en <see cref="_Ready"/> y no consulta al
 /// jugador directamente, de modo que el gestor sigue siendo la única fuente de verdad.
+/// El número de corazones se adapta a la vida máxima actual del jugador.
 /// </remarks>
 public partial class Hud : CanvasLayer
 {
+	/// <summary>Contenedor donde se añaden corazones si aumenta la vida máxima.</summary>
+	private HBoxContainer _heartsContainer;
+
 	/// <summary>Corazones que representan las vidas restantes, en orden de izquierda a derecha.</summary>
-	private TextureRect[] _hearts;
+	private List<TextureRect> _hearts;
+
+	/// <summary>Textura compartida por los corazones creados en tiempo de ejecución.</summary>
+	private Texture2D _heartTexture;
 
 	/// <summary>Etiqueta del nivel actual.</summary>
 	private Label _levelLabel;
@@ -27,12 +35,15 @@ public partial class Hud : CanvasLayer
 	/// <inheritdoc/>
 	public override void _Ready()
 	{
-		_hearts = new[]
+		_heartsContainer = GetNode<HBoxContainer>("HudBar/Hearts");
+		_hearts = new List<TextureRect>
 		{
 			GetNode<TextureRect>("HudBar/Hearts/Heart1"),
 			GetNode<TextureRect>("HudBar/Hearts/Heart2"),
 			GetNode<TextureRect>("HudBar/Hearts/Heart3")
 		};
+		_heartTexture = _hearts[0].Texture;
+
 		_levelLabel = GetNode<Label>("HudBar/LevelLabel");
 		_enemiesLabel = GetNode<Label>("HudBar/EnemiesLabel");
 		_scoreLabel = GetNode<Label>("HudBar/ScoreLabel");
@@ -51,7 +62,7 @@ public partial class Hud : CanvasLayer
 		gameManager.ScoreChanged += UpdateScore;
 		gameManager.GameOver += ShowGameOver;
 
-		UpdateLives(gameManager.Lives);
+		UpdateLives(gameManager.Lives, gameManager.MaxLives);
 		UpdateLevel(gameManager.Level);
 		UpdateEnemies(gameManager.EnemiesRemaining, gameManager.TotalEnemies);
 		UpdateScore(gameManager.Score);
@@ -73,18 +84,47 @@ public partial class Hud : CanvasLayer
 	}
 
 	/// <summary>
-	/// Muestra tantos corazones como vidas queden y oculta los sobrantes.
+	/// Ajusta el número de corazones a la vida máxima y oculta los que no tienen vida.
 	/// </summary>
 	/// <param name="lives">Vidas restantes.</param>
+	/// <param name="maxLives">Vidas máximas actuales.</param>
 	/// <remarks>
 	/// Se cambia el alfa en lugar de <see cref="CanvasItem.Visible"/> para que el
-	/// contenedor reserve siempre el espacio de los tres corazones y el resto del
-	/// HUD no se desplace al perder una vida.
+	/// contenedor reserve el espacio de los corazones y el resto del HUD no se desplace.
 	/// </remarks>
-	private void UpdateLives(int lives)
+	private void UpdateLives(int lives, int maxLives)
 	{
-		for (int i = 0; i < _hearts.Length; i++)
+		EnsureHeartCount(maxLives);
+
+		for (int i = 0; i < _hearts.Count; i++)
 			_hearts[i].Modulate = new Color(1f, 1f, 1f, i < lives ? 1f : 0f);
+	}
+
+	/// <summary>Ajusta el número de corazones a la vida máxima actual.</summary>
+	/// <param name="maxLives">Vidas máximas actuales.</param>
+	private void EnsureHeartCount(int maxLives)
+	{
+		while (_hearts.Count < maxLives)
+		{
+			var heart = new TextureRect
+			{
+				Texture = _heartTexture,
+				CustomMinimumSize = new Vector2(32f, 32f),
+				SizeFlagsVertical = Control.SizeFlags.ShrinkCenter,
+				TextureFilter = CanvasItem.TextureFilterEnum.Nearest
+			};
+
+			_heartsContainer.AddChild(heart);
+			_hearts.Add(heart);
+		}
+
+		while (_hearts.Count > maxLives)
+		{
+			TextureRect last = _hearts[_hearts.Count - 1];
+			_hearts.RemoveAt(_hearts.Count - 1);
+			_heartsContainer.RemoveChild(last);
+			last.QueueFree();
+		}
 	}
 
 	/// <summary>Refleja en la etiqueta el nivel reportado por el gestor.</summary>
