@@ -34,6 +34,7 @@ public partial class PlayerController : CharacterBody2D
     public override void _Ready()
     {
         base._Ready();
+        AddToGroup("Player");
         Marker2D = GetNode<Marker2D>("Marker2D");
 
         HealthComponent = GetNode<HealthComponent>("HealthComponent");
