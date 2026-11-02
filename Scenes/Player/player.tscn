@@ -29,8 +29,7 @@ radius = 12.0
 [node name="Player" type="CharacterBody2D" unique_id=258991823]
 script = ExtResource("1_jlvik")
 
-[node name="HealthComponent" parent="." instance=ExtResource("11_health")]
-InitialMaxHealth = 3
+[node name="HealthComponent" parent="." unique_id=231266561 instance=ExtResource("11_health")]
 
 [node name="Animation" type="AnimatedSprite2D" parent="." unique_id=1226598149]
 texture_filter = 1
@@ -40,15 +39,16 @@ animation = &"idle"
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=285513500]
 shape = SubResource("CircleShape2D_vnw7b")
 
-[node name="HitboxComponent" parent="." instance=ExtResource("10_hitbox")]
-Type = 0
-Radius = 12.0
+[node name="HitboxComponent" parent="." unique_id=608907544 instance=ExtResource("10_hitbox")]
 
-[node name="Marker2D" type="Marker2D" parent="." unique_id=1927930730]
-position = Vector2(0, -17)
+[node name="MuzzlePivot" type="Node2D" parent="." unique_id=1387846123]
 
-[node name="Sprite2D" type="Sprite2D" parent="Marker2D" unique_id=433289741]
+[node name="Marker2D" type="Marker2D" parent="MuzzlePivot" unique_id=1927930730]
+position = Vector2(0, -25)
+
+[node name="Sprite2D" type="Sprite2D" parent="MuzzlePivot/Marker2D" unique_id=433289741]
 texture_filter = 1
+position = Vector2(0, -12)
 texture = ExtResource("3_gk6dx")
 
 [node name="MovementMachine" type="Node" parent="." unique_id=1575684700 node_paths=PackedStringArray("_initialStateNode", "_bodyNode")]
