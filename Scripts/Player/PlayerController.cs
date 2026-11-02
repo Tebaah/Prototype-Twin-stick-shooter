@@ -10,6 +10,11 @@ public partial class PlayerController : CharacterBody2D
 
     /// <summary>Dirección de entrada normalizada que aporta el estado activo.</summary>
     public Vector2 DirectionOfMovement { get; set; }
+
+    /// <summary>Pivote que gira alrededor del jugador para apuntar el muzzle.</summary>
+    public Node2D MuzzlePivot { get; private set; }
+
+    /// <summary>Punto de salida de los proyectiles, hijo del pivote.</summary>
     public Marker2D Marker2D { get; set; }
 
     /// <summary>Componente que administra la salud del jugador.</summary>
@@ -35,7 +40,9 @@ public partial class PlayerController : CharacterBody2D
     {
         base._Ready();
         AddToGroup("Player");
-        Marker2D = GetNode<Marker2D>("Marker2D");
+
+        MuzzlePivot = GetNode<Node2D>("MuzzlePivot");
+        Marker2D = GetNode<Marker2D>("MuzzlePivot/Marker2D");
 
         HealthComponent = GetNode<HealthComponent>("HealthComponent");
         HealthComponent.HealthChanged += OnHealthChanged;
@@ -58,7 +65,7 @@ public partial class PlayerController : CharacterBody2D
     public override void _PhysicsProcess(double delta)
     {
         base._PhysicsProcess(delta);
-        RotateToMouse();
+        RotateMuzzleToMouse();
     }
 
     #endregion
@@ -82,15 +89,19 @@ public partial class PlayerController : CharacterBody2D
     private void OnDied() => Died?.Invoke();
 
     /// <summary>
-    /// Orienta al jugador hacia el cursor del ratón.
-    /// <see cref="Node2D.LookAt"/> alinea el eje +X local con el cursor, pero el frente del
-    /// personaje y el marcador de puntería (Marker2D, en (0, -17) local) apuntan hacia arriba
-    /// (eje -Y local); de ahí la corrección constante de 90° sobre <see cref="Node2D.RotationDegrees"/>.
+    /// Orienta solo el pivote del muzzle hacia el cursor; el cuerpo y el sprite del
+    /// jugador permanecen en su orientación original.
     /// </summary>
-    public void RotateToMouse()
+    /// <remarks>
+    /// <see cref="Node2D.LookAt"/> alinea el eje +X local del pivote con el cursor,
+    /// pero el <see cref="Marker2D"/> está desplazado sobre el eje -Y local y apunta
+    /// hacia arriba; de ahí la corrección constante de 90° sobre
+    /// <see cref="Node2D.RotationDegrees"/>.
+    /// </remarks>
+    public void RotateMuzzleToMouse()
     {
-        LookAt(GetGlobalMousePosition());
-        RotationDegrees += 90f;
+        MuzzlePivot.LookAt(GetGlobalMousePosition());
+        MuzzlePivot.RotationDegrees += 90f;
     }
 
     #endregion
