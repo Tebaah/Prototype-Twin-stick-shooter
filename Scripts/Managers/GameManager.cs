@@ -1,6 +1,6 @@
-using Godot;
 using System;
 using System.Collections.Generic;
+using Godot;
 
 /// <summary>
 /// Estado global de la partida: vidas, nivel, enemigos, puntaje y fin de partida.
@@ -72,6 +72,30 @@ public partial class GameManager : Node
 	{
 		if (Instance == this)
 			Instance = null;
+	}
+
+	/// <summary>
+	/// Deja el gestor en el estado inicial de una partida nueva.
+	/// </summary>
+	/// <remarks>
+	/// Reinicia nivel, puntaje, contadores de enemigos y vidas. No modifica la salud
+	/// del jugador: la escena nueva crea su propio jugador con la vida inicial.
+	/// </remarks>
+	public void ResetGame()
+	{
+		Score = 0;
+		ScoreChanged?.Invoke(Score);
+
+		Level = 1;
+		LevelChanged?.Invoke(Level);
+
+		_aliveEnemies.Clear();
+		TotalEnemies = 0;
+		EnemiesChanged?.Invoke(EnemiesRemaining, TotalEnemies);
+
+		MaxLives = DefaultMaxLives;
+		Lives = DefaultMaxLives;
+		LivesChanged?.Invoke(Lives, MaxLives);
 	}
 
 	/// <summary>
