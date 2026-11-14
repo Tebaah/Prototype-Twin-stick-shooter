@@ -40,6 +40,9 @@ public partial class GameManager : Node
 	/// <summary>Puntaje acumulado por los enemigos eliminados.</summary>
 	public int Score { get; private set; }
 
+	/// <summary>Indica si la partida terminó porque el jugador se quedó sin vidas.</summary>
+	public bool IsGameOver { get; private set; }
+
 	/// <summary>Se emite cuando cambian las vidas, con (vidas actuales, vidas máximas).</summary>
 	public event Action<int, int> LivesChanged;
 
@@ -55,8 +58,17 @@ public partial class GameManager : Node
 	/// <summary>Se emite una sola vez cuando el jugador se queda sin vidas.</summary>
 	public event Action GameOver;
 
+	/// <summary>Se emite cuando se eliminan todos los enemigos del nivel.</summary>
+	public event Action<int> LevelCleared;
+
 	/// <summary>Enemigos vivos registrados, usados para calcular los restantes.</summary>
 	private readonly HashSet<Node2D> _aliveEnemies = new();
+
+	/// <summary>Evita emitir LevelCleared más de una vez para el mismo nivel.</summary>
+	private bool _levelClearRaised;
+
+	/// <summary>Silencia LevelCleared mientras el LevelManager reconstruye el nivel.</summary>
+	private bool _levelTransitioning;
 
 	/// <summary>Jugador vinculado actualmente, si lo hay.</summary>
 	private PlayerController _player;
@@ -83,6 +95,10 @@ public partial class GameManager : Node
 	/// </remarks>
 	public void ResetGame()
 	{
+		IsGameOver = false;
+		_levelClearRaised = false;
+		_levelTransitioning = false;
+
 		Score = 0;
 		ScoreChanged?.Invoke(Score);
 
@@ -142,7 +158,10 @@ public partial class GameManager : Node
 			return;
 
 		if (_aliveEnemies.Count == 1)
+		{
 			TotalEnemies = 0;
+			_levelClearRaised = false;
+		}
 
 		TotalEnemies++;
 		EnemiesChanged?.Invoke(EnemiesRemaining, TotalEnemies);
@@ -156,7 +175,19 @@ public partial class GameManager : Node
 			return;
 
 		EnemiesChanged?.Invoke(EnemiesRemaining, TotalEnemies);
+
+		if (EnemiesRemaining == 0 && !_levelClearRaised && !_levelTransitioning && !IsGameOver && TotalEnemies > 0)
+		{
+			_levelClearRaised = true;
+			LevelCleared?.Invoke(Level);
+		}
 	}
+
+	/// <summary>Silencia LevelCleared mientras se retiran y reconstruyen enemigos.</summary>
+	public void BeginLevelTransition() => _levelTransitioning = true;
+
+	/// <summary>Reactiva LevelCleared cuando el nuevo nivel ya está instanciado.</summary>
+	public void EndLevelTransition() => _levelTransitioning = false;
 
 	/// <summary>Fija el nivel actual y avisa a la interfaz.</summary>
 	/// <param name="level">Nivel a mostrar; los valores menores que 1 se elevan a 1.</param>
@@ -187,7 +218,14 @@ public partial class GameManager : Node
 	private void OnPlayerHealthChanged(int health, int maxHealth) => SetLives(health, maxHealth);
 
 	/// <summary>Propaga el fin de partida cuando el jugador se queda sin vidas.</summary>
-	private void OnPlayerDied() => GameOver?.Invoke();
+	private void OnPlayerDied()
+	{
+		if (IsGameOver)
+			return;
+
+		IsGameOver = true;
+		GameOver?.Invoke();
+	}
 
 	/// <summary>Fija las vidas dentro del rango permitido y avisa a la interfaz.</summary>
 	/// <param name="lives">Vidas reportadas.</param>

@@ -40,6 +40,8 @@ public partial class Bullet : Area2D
 	/// <inheritdoc/>
 	public override void _Ready()
 	{
+		AddToGroup("Projectiles");
+
 		_hitbox = GetNode<HitboxComponent>("HitboxComponent");
 		_hitbox.Configure(BulletType);
 		_hitbox.Hit += OnHit;
