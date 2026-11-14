@@ -93,7 +93,7 @@ Los enemigos solo otorgan su puntaje aleatorio (10–50 puntos) cuando mueren po
 
 | Característica     | Especificación                                            |
 | ------------------ | --------------------------------------------------------- |
-| **Cantidad**       | 29 (20% de 144 celdas)                                    |
+| **Cantidad**       | 15–29 según el nivel (máximo 29 en el nivel 10)            |
 | **Tamaño**         | 64x64 píxeles                                             |
 | **Comportamiento** | Sólidos para el jugador, atravesables por enemigos (v1.0) |
 | **Generación**     | Aleatoria con zona segura y sin bloques 3x3               |
@@ -237,7 +237,7 @@ El juego se considera terminado cuando se cumple **TODOS** estos puntos:
 5. ✅ Los enemigos Sniper disparan proyectiles
 6. ✅ El jugador pierde vida al tocar enemigos o proyectiles
 7. ✅ Los obstáculos bloquean al jugador y las balas
-8. ✅ Se generan 29 obstáculos con zona segura
+8. ✅ Se generan los obstáculos indicados por nivel (15 a 29) con zona segura
 9. ✅ Se pueden jugar al menos 3 niveles consecutivos
 10. ✅ Game Over al llegar a 0 vidas
 11. ✅ Reinicio del juego con tecla R
