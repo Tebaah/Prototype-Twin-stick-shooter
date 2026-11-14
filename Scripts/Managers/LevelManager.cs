@@ -25,6 +25,9 @@ public partial class LevelManager : Node
 	/// <summary>Coordenada máxima de la zona segura central.</summary>
 	private const int SafeZoneMaxCell = 6;
 
+	/// <summary>Tiempo que se muestra LEVEL CLEAR antes de cargar el siguiente nivel.</summary>
+	private const double LevelClearDelay = 1.0;
+
 	/// <summary>Composición de un nivel.</summary>
 	private readonly struct LevelDefinition
 	{
@@ -75,12 +78,35 @@ public partial class LevelManager : Node
 	/// <summary>Nivel cargado actualmente.</summary>
 	public int CurrentLevel { get; private set; } = 1;
 
+	/// <summary>Temporizador que retrasa el cambio de nivel tras LEVEL CLEAR.</summary>
+	private Timer _levelClearTimer;
+
 	/// <inheritdoc/>
 	public override void _Ready()
 	{
 		_enemiesContainer = GetNode<Node>("../Enemies");
 		_obstacles = GetNode<Node>("../Map") as Obstacles;
+
+		_levelClearTimer = new Timer
+		{
+			WaitTime = LevelClearDelay,
+			OneShot = true,
+			Autostart = false
+		};
+		AddChild(_levelClearTimer);
+		_levelClearTimer.Timeout += OnLevelClearTimeout;
+
+		if (GameManager.Instance is not null)
+			GameManager.Instance.LevelCleared += OnLevelCleared;
+
 		LoadLevel(1);
+	}
+
+	/// <inheritdoc/>
+	public override void _ExitTree()
+	{
+		if (GameManager.Instance is not null)
+			GameManager.Instance.LevelCleared -= OnLevelCleared;
 	}
 
 	/// <summary>Carga el nivel indicado, regenerando enemigos y obstáculos.</summary>
@@ -96,6 +122,9 @@ public partial class LevelManager : Node
 		int levelNumber = Math.Clamp(level, 1, Levels.Length);
 		LevelDefinition definition = Levels[levelNumber - 1];
 
+		_levelClearTimer.Stop();
+		GameManager.Instance?.BeginLevelTransition();
+
 		CurrentLevel = levelNumber;
 		GameManager.Instance?.SetLevel(levelNumber);
 
@@ -105,11 +134,44 @@ public partial class LevelManager : Node
 			GD.PushWarning("LevelManager: el mapa no tiene el componente Obstacles.");
 
 		ClearEnemies();
+		ClearProjectiles();
 		SpawnEnemies(definition);
+		GameManager.Instance?.EndLevelTransition();
 	}
 
 	/// <summary>Avanza al siguiente nivel disponible.</summary>
 	public void NextLevel() => LoadLevel(CurrentLevel + 1);
+
+	/// <summary>Espera el tiempo de LEVEL CLEAR antes de cargar el siguiente nivel.</summary>
+	/// <param name="level">Nivel completado.</param>
+	private void OnLevelCleared(int level)
+	{
+		if (GameManager.Instance?.IsGameOver == true)
+			return;
+
+		ClearProjectiles();
+		_levelClearTimer.Start();
+	}
+
+	/// <summary>Carga el siguiente nivel al terminar el aviso de LEVEL CLEAR.</summary>
+	private void OnLevelClearTimeout()
+	{
+		if (GameManager.Instance?.IsGameOver == true)
+			return;
+
+		NextLevel();
+	}
+
+	/// <summary>Elimina las balas en vuelo para que no afecten al siguiente nivel.</summary>
+	private void ClearProjectiles()
+	{
+		foreach (Node projectile in GetTree().GetNodesInGroup("Projectiles"))
+		{
+			Node parent = projectile.GetParent();
+			parent?.RemoveChild(projectile);
+			projectile.QueueFree();
+		}
+	}
 
 	/// <summary>Elimina los enemigos del nivel anterior de forma inmediata.</summary>
 	private void ClearEnemies()
