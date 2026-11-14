@@ -32,6 +32,12 @@ public partial class Hud : CanvasLayer
 	/// <summary>Aviso centrado de fin de partida, oculto durante el juego.</summary>
 	private Label _gameOverLabel;
 
+	/// <summary>Aviso centrado de nivel completado.</summary>
+	private Label _levelClearLabel;
+
+	/// <summary>Temporizador que oculta LEVEL CLEAR después de un segundo.</summary>
+	private Timer _levelClearTimer;
+
 	/// <inheritdoc/>
 	public override void _Ready()
 	{
@@ -48,6 +54,7 @@ public partial class Hud : CanvasLayer
 		_enemiesLabel = GetNode<Label>("HudBar/EnemiesLabel");
 		_scoreLabel = GetNode<Label>("HudBar/ScoreLabel");
 		_gameOverLabel = GetNode<Label>("GameOverLabel");
+		_levelClearLabel = GetNode<Label>("LevelClearLabel");
 
 		GameManager gameManager = GameManager.Instance;
 		if (gameManager is null)
@@ -56,17 +63,28 @@ public partial class Hud : CanvasLayer
 			return;
 		}
 
+		_levelClearTimer = new Timer
+		{
+			WaitTime = 1.0,
+			OneShot = true,
+			Autostart = false
+		};
+		AddChild(_levelClearTimer);
+		_levelClearTimer.Timeout += HideLevelClear;
+
 		gameManager.LivesChanged += UpdateLives;
 		gameManager.LevelChanged += UpdateLevel;
 		gameManager.EnemiesChanged += UpdateEnemies;
 		gameManager.ScoreChanged += UpdateScore;
 		gameManager.GameOver += ShowGameOver;
+		gameManager.LevelCleared += ShowLevelClear;
 
 		UpdateLives(gameManager.Lives, gameManager.MaxLives);
 		UpdateLevel(gameManager.Level);
 		UpdateEnemies(gameManager.EnemiesRemaining, gameManager.TotalEnemies);
 		UpdateScore(gameManager.Score);
 		_gameOverLabel.Visible = false;
+		_levelClearLabel.Visible = false;
 	}
 
 	/// <inheritdoc/>
@@ -81,6 +99,7 @@ public partial class Hud : CanvasLayer
 		gameManager.EnemiesChanged -= UpdateEnemies;
 		gameManager.ScoreChanged -= UpdateScore;
 		gameManager.GameOver -= ShowGameOver;
+		gameManager.LevelCleared -= ShowLevelClear;
 	}
 
 	/// <summary>
@@ -129,7 +148,11 @@ public partial class Hud : CanvasLayer
 
 	/// <summary>Refleja en la etiqueta el nivel reportado por el gestor.</summary>
 	/// <param name="level">Nivel actual.</param>
-	private void UpdateLevel(int level) => _levelLabel.Text = $"NIVEL: {level}";
+	private void UpdateLevel(int level)
+	{
+		_levelLabel.Text = $"NIVEL: {level}";
+		_levelClearLabel.Visible = false;
+	}
 
 	/// <summary>Refleja en la etiqueta los enemigos restantes y el total del nivel.</summary>
 	/// <param name="remaining">Enemigos vivos.</param>
@@ -140,6 +163,25 @@ public partial class Hud : CanvasLayer
 	/// <param name="score">Puntaje acumulado.</param>
 	private void UpdateScore(int score) => _scoreLabel.Text = $"PUNTOS: {score}";
 
+	/// <summary>Muestra el aviso de nivel completado durante un segundo.</summary>
+	/// <param name="level">Nivel completado.</param>
+	private void ShowLevelClear(int level)
+	{
+		if (GameManager.Instance?.IsGameOver == true)
+			return;
+
+		_levelClearLabel.Visible = true;
+		_levelClearTimer.Start();
+	}
+
+	/// <summary>Oculta el aviso de nivel completado.</summary>
+	private void HideLevelClear() => _levelClearLabel.Visible = false;
+
 	/// <summary>Muestra el aviso de fin de partida.</summary>
-	private void ShowGameOver() => _gameOverLabel.Visible = true;
+	private void ShowGameOver()
+	{
+		_levelClearTimer.Stop();
+		_levelClearLabel.Visible = false;
+		_gameOverLabel.Visible = true;
+	}
 }
