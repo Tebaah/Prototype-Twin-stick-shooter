@@ -29,11 +29,32 @@ public partial class Obstacles : Node
 	/// <remarks>Los nombres de los campos exportados están serializados en las escenas; no renombrar.</remarks>
 	[Export] private PackedScene[] obstacles = Array.Empty<PackedScene>();
 
-	/// <summary>Cantidad de obstáculos a instanciar en <see cref="_Ready"/>.</summary>
+	/// <summary>Cantidad de obstáculos a instanciar al entrar en escena.</summary>
 	[Export] private int numberOfObstacles;
 
 	/// <inheritdoc/>
 	public override void _Ready()
+	{
+		GenerateObstacles();
+	}
+
+	/// <summary>Regenera el escenario con la cantidad de obstáculos indicada.</summary>
+	/// <param name="count">Nueva cantidad de obstáculos; se limita a las celdas disponibles.</param>
+	public void Regenerate(int count)
+	{
+		numberOfObstacles = Math.Max(0, count);
+
+		foreach (Node child in GetChildren())
+		{
+			RemoveChild(child);
+			child.QueueFree();
+		}
+
+		GenerateObstacles();
+	}
+
+	/// <summary>Instancia los obstáculos configurados en celdas libres.</summary>
+	private void GenerateObstacles()
 	{
 		if (obstacles is null || obstacles.Length == 0)
 		{
