@@ -87,6 +87,7 @@ ui_restart={
 2d_physics/layer_4="EnemyHitbox"
 2d_physics/layer_5="PlayerBulletHitbox"
 2d_physics/layer_6="EnemyBulletHitbox"
+2d_physics/layer_7="Obstacle"
 
 [physics]
 

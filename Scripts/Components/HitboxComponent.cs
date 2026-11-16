@@ -25,7 +25,8 @@ public enum HitboxType
 /// <remarks>
 /// Las capas se configuran de forma unilateral para que cada pareja se detecte una
 /// sola vez: el jugador es solo detectable, los enemigos detectan al jugador y las
-/// balas detectan a su objetivo. El propietario decide cómo reaccionar a
+/// balas detectan a su objetivo. Las balas también detectan cuerpos de obstáculos
+/// para bloquear el proyectil. El propietario decide cómo reaccionar a
 /// <see cref="Hit"/>; el componente no aplica daño por sí mismo.
 /// La escena del componente debe incluir un <see cref="CollisionShape2D"/> con una
 /// <see cref="CircleShape2D"/>; su radio se ajusta por instancia.
@@ -38,11 +39,8 @@ public partial class HitboxComponent : Area2D
 	/// <summary>Capa del hitbox de los enemigos (capa 4).</summary>
 	private const uint EnemyLayer = 1u << 3;
 
-	/// <summary>Capa de los hitboxes de balas del jugador (capa 5).</summary>
-	private const uint PlayerBulletLayer = 1u << 4;
-
-	/// <summary>Capa de los hitboxes de balas enemigas (capa 6).</summary>
-	private const uint EnemyBulletLayer = 1u << 5;
+	/// <summary>Capa de los obstáculos sólidos para balas (capa 7).</summary>
+	private const uint ObstacleLayer = 1u << 6;
 
 	/// <summary>Tipo de entidad que posee este hitbox.</summary>
 	[Export] public HitboxType Type { get; set; } = HitboxType.Player;
@@ -59,6 +57,9 @@ public partial class HitboxComponent : Area2D
 	/// <summary>Se emite cuando otro hitbox entra en este, con el hitbox detectado.</summary>
 	public event Action<HitboxComponent> Hit;
 
+	/// <summary>Se emite cuando un cuerpo sólido entra en el área, como un obstáculo.</summary>
+	public event Action<Node2D> BodyHit;
+
 	/// <inheritdoc/>
 	public override void _Ready()
 	{
@@ -69,6 +70,7 @@ public partial class HitboxComponent : Area2D
 		ConfigureShape();
 		ApplyCollisionConfiguration();
 		AreaEntered += OnAreaEntered;
+		BodyEntered += OnBodyEntered;
 	}
 
 	/// <summary>
@@ -129,15 +131,16 @@ public partial class HitboxComponent : Area2D
 				break;
 
 			case HitboxType.PlayerBullet:
-				CollisionLayer = PlayerBulletLayer;
-				CollisionMask = EnemyLayer;
+				// Las balas no necesitan capa propia: solo detectan áreas y obstáculos.
+				CollisionMask = EnemyLayer | ObstacleLayer;
 				Monitoring = true;
+				Monitorable = true;
 				break;
 
 			case HitboxType.EnemyBullet:
-				CollisionLayer = EnemyBulletLayer;
-				CollisionMask = PlayerLayer;
+				CollisionMask = PlayerLayer | ObstacleLayer;
 				Monitoring = true;
+				Monitorable = true;
 				break;
 		}
 	}
@@ -150,5 +153,12 @@ public partial class HitboxComponent : Area2D
 			return;
 
 		Hit?.Invoke(other);
+	}
+
+	/// <summary>Notifica al propietario cuando un cuerpo sólido entra en el área.</summary>
+	/// <param name="body">Cuerpo que entró; las balas lo usan para detectar obstáculos.</param>
+	private void OnBodyEntered(Node2D body)
+	{
+		BodyHit?.Invoke(body);
 	}
 }
