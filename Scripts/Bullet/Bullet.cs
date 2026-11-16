@@ -45,6 +45,7 @@ public partial class Bullet : Area2D
 		_hitbox = GetNode<HitboxComponent>("HitboxComponent");
 		_hitbox.Configure(BulletType);
 		_hitbox.Hit += OnHit;
+		_hitbox.BodyHit += OnBodyHit;
 
 		Direction = AimAtMouse
 			? GlobalPosition.DirectionTo(GetGlobalMousePosition())
@@ -81,6 +82,17 @@ public partial class Bullet : Area2D
 			player.TakeDamage(_hitbox.Damage);
 			QueueFree();
 		}
+	}
+
+	/// <summary>Libera la bala si impacta un obstáculo sólido.</summary>
+	/// <param name="body">Cuerpo que entró en el área de la bala.</param>
+	private void OnBodyHit(Node2D body)
+	{
+		if (_hasHit || !body.IsInGroup("Obstacle"))
+			return;
+
+		_hasHit = true;
+		QueueFree();
 	}
 
 	/// <summary>

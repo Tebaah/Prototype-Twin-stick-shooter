@@ -25,6 +25,9 @@ public partial class Obstacles : Node
 	/// <summary>Coordenada máxima (inclusive) de la zona segura central de 2x2 celdas.</summary>
 	private const int SafeZoneMaxCell = 6;
 
+	/// <summary>Capa de obstáculos para colisiones con balas (capa 7).</summary>
+	private const uint ObstacleLayer = 1u << 6;
+
 	/// <summary>Escenas candidatas entre las que se elige cada obstáculo.</summary>
 	/// <remarks>Los nombres de los campos exportados están serializados en las escenas; no renombrar.</remarks>
 	[Export] private PackedScene[] obstacles = Array.Empty<PackedScene>();
@@ -82,20 +85,83 @@ public partial class Obstacles : Node
 			GD.PushWarning($"Obstacles: la arena solo admite {freeCells.Count} obstáculos fuera de la zona segura; se generarán {obstacleCount} de {numberOfObstacles}.");
 		}
 
-		for (int i = 0; i < obstacleCount; i++)
+		var occupied = new bool[ArenaCellsPerSide, ArenaCellsPerSide];
+		int placed = 0;
+
+		while (placed < obstacleCount && freeCells.Count > 0)
 		{
+			int cellIndex = GD.RandRange(0, freeCells.Count - 1);
+			Vector2I cell = freeCells[cellIndex];
+
+			if (WouldCreateThreeByThree(occupied, cell))
+			{
+				freeCells.RemoveAt(cellIndex);
+				continue;
+			}
+
+			freeCells.RemoveAt(cellIndex);
+			occupied[cell.Y, cell.X] = true;
+			placed++;
+
 			// RandRange incluye ambos extremos, así que el último índice válido es Length - 1.
 			int sceneIndex = GD.RandRange(0, obstacles.Length - 1);
 			Node2D obstacle = obstacles[sceneIndex].Instantiate<Node2D>();
+			obstacle.AddToGroup("Obstacle");
 			AddChild(obstacle);
 
-			int cellIndex = GD.RandRange(0, freeCells.Count - 1);
-			Vector2I cell = freeCells[cellIndex];
-			freeCells.RemoveAt(cellIndex);
+			if (obstacle is StaticBody2D body)
+			{
+				body.CollisionLayer = ObstacleLayer;
+				body.CollisionMask = 0;
+			}
 
 			// Posición local al mapa, que es el origen de la rejilla de la arena.
 			obstacle.Position = CellCenter(cell);
 		}
+
+		if (placed < obstacleCount)
+		{
+			GD.PushWarning($"Obstacles: solo se pudieron colocar {placed} de {obstacleCount} obstáculos sin formar bloques 3x3.");
+		}
+	}
+
+	/// <summary>Indica si colocar un obstáculo formaría un bloque completo de 3x3.</summary>
+	/// <param name="occupied">Celdas ya ocupadas por obstáculos.</param>
+	/// <param name="cell">Celda candidata.</param>
+	/// <returns><c>true</c> si la celda completaría un bloque 3x3.</returns>
+	private static bool WouldCreateThreeByThree(bool[,] occupied, Vector2I cell)
+	{
+		for (int top = cell.Y - 2; top <= cell.Y; top++)
+		{
+			for (int left = cell.X - 2; left <= cell.X; left++)
+			{
+				if (left < 0 || top < 0
+					|| left + 2 >= ArenaCellsPerSide
+					|| top + 2 >= ArenaCellsPerSide)
+					continue;
+
+				bool full = true;
+				for (int y = top; y <= top + 2 && full; y++)
+				{
+					for (int x = left; x <= left + 2; x++)
+					{
+						if (x == cell.X && y == cell.Y)
+							continue;
+
+						if (!occupied[y, x])
+						{
+							full = false;
+							break;
+						}
+					}
+				}
+
+				if (full)
+					return true;
+			}
+		}
+
+		return false;
 	}
 
 	/// <summary>
