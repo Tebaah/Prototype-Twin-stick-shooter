@@ -70,7 +70,7 @@ Los enemigos solo otorgan su puntaje aleatorio (10–50 puntos) cuando mueren po
 | **Vida**           | 1 golpe                          |
 | **Daño**           | -1 vida al contacto (explota sin otorgar puntaje) |
 
-#### Tipo B: Sniper
+#### Tipo B: Sniper (Shooter)
 
 | Característica     | Especificación                            |
 | ------------------ | ----------------------------------------- |
@@ -78,10 +78,13 @@ Los enemigos solo otorgan su puntaje aleatorio (10–50 puntos) cuando mueren po
 | **Tamaño**         | 32x32 píxeles                             |
 | **Comportamiento** | Se aleja del jugador, dispara proyectiles |
 | **Velocidad**      | Baja (50% velocidad jugador)              |
+| **Distancia de combate** | 150 px (se detiene entre 130 y 170 px) |
 | **Vida**           | 2 golpes                                  |
 | **Contacto**       | -1 vida al jugador; el enemigo no se destruye |
 | **Daño**           | -1 vida por proyectil                     |
 | **Cadencia**       | 1 disparo cada 1.5 segundos               |
+
+> En el código, este enemigo se implementa con `EnemyShooter`.
 
 ### 2.2.1 Diagramas
 #### Flujo ataque Rusher

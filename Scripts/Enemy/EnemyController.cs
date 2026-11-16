@@ -36,6 +36,14 @@ public abstract partial class EnemyController : CharacterBody2D
 	/// <summary>Dirección unitaria de desplazamiento, recalculada por el estado activo.</summary>
 	public Vector2 Direction { get; set; } = Vector2.Zero;
 
+	/// <summary>Calcula la dirección de desplazamiento hacia el objetivo.</summary>
+	/// <param name="target">Objetivo detectado.</param>
+	/// <returns>Dirección unitaria; las subclases pueden modificarla.</returns>
+	public virtual Vector2 GetMovementDirection(Node2D target)
+	{
+		return GlobalPosition.DirectionTo(target.GlobalPosition);
+	}
+
 	/// <summary>Componente que administra la salud del enemigo.</summary>
 	public HealthComponent HealthComponent { get; private set; }
 

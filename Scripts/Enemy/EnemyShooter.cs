@@ -19,6 +19,28 @@ public partial class EnemyShooter : EnemyController
 	/// <summary>El Shooter no se destruye al tocar al jugador.</summary>
 	protected override bool DestroyOnPlayerContact => false;
 
+	/// <summary>Distancia que intenta mantener con el jugador, en píxeles.</summary>
+	[Export] public float PreferredDistance { get; set; } = 150f;
+
+	/// <summary>Margen alrededor de la distancia preferida donde el Shooter se detiene.</summary>
+	[Export] public float DistanceTolerance { get; set; } = 20f;
+
+	/// <summary>Calcula el movimiento de retirada o acercamiento según la distancia.</summary>
+	/// <param name="target">Jugador detectado.</param>
+	/// <returns>Dirección de alejamiento, acercamiento o cero si está en rango.</returns>
+	public override Vector2 GetMovementDirection(Node2D target)
+	{
+		float distance = GlobalPosition.DistanceTo(target.GlobalPosition);
+
+		if (distance < PreferredDistance - DistanceTolerance)
+			return target.GlobalPosition.DirectionTo(GlobalPosition);
+
+		if (distance > PreferredDistance + DistanceTolerance)
+			return GlobalPosition.DirectionTo(target.GlobalPosition);
+
+		return Vector2.Zero;
+	}
+
 	/// <summary>Temporizador que marca la cadencia de disparo.</summary>
 	private Timer _attackTimer;
 
