@@ -13,7 +13,7 @@
 | **Motor**      | Godot (C#)                              |
 | **Género**     | Twin-stick shooter                      |
 | **Público**    | Desarrollador independiente / Portfolio |
-| **Estado**     | En diseño                               |
+| **Estado**     | Prototipo validado                      |
 
 ***
 
@@ -134,7 +134,7 @@ Los enemigos solo otorgan su puntaje aleatorio (10–50 puntos) cuando mueren po
 - Al eliminar todos los enemigos → "LEVEL CLEAR" (1 segundo)
 - Regenerar mapa con nuevos obstáculos
 - Aumentar número de enemigos según tabla
-- El jugador recupera 1 vida por nivel completado (opcional - decisión pendiente)
+- El jugador no recupera vida al completar un nivel en la v1.0.
 
 ### 3.3 Condiciones de fin
 
