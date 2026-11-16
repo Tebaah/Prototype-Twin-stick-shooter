@@ -24,7 +24,7 @@ public partial class MoveState : EnemyState
 		}
 
 		Node2D target = Body.Detection.Target;
-		Body.Direction = Body.GlobalPosition.DirectionTo(target.GlobalPosition);
+		Body.Direction = Body.GetMovementDirection(target);
 		Body.Velocity = Body.Direction * Body.Speed;
 		Body.MoveAndSlide();
 	}

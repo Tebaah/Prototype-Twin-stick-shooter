@@ -16,11 +16,9 @@ position = Vector2(384, 384)
 
 [node name="EnemyRusher" parent="." unique_id=1409485549 instance=ExtResource("3_ad02b")]
 position = Vector2(576, 192)
-Speed = 200.0
 
 [node name="EnemyRusher2" parent="." unique_id=415885769 instance=ExtResource("4_qdloc")]
 position = Vector2(128, 448)
-Speed = 200.0
 
 [node name="Hud" parent="." unique_id=1995743400 instance=ExtResource("6_hud")]
 
